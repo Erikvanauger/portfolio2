@@ -1,9 +1,11 @@
 "use client"
 import React, { useState } from 'react';
-import { Code, Music, ArrowRight, Headphones } from 'lucide-react';
+import { Code, Music, ArrowRight, Headphones} from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function PortfolioLanding() {
-  const [hoveredSide, setHoveredSide] = useState(null);
+  const [hoveredSide, setHoveredSide] = useState<"portfolio"| "music" |null>(null);
+  const router = useRouter();
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-black">
@@ -19,11 +21,10 @@ export default function PortfolioLanding() {
         onMouseEnter={() => setHoveredSide("portfolio")}
         onMouseLeave={() => setHoveredSide(null)}
         onClick={() => {
-          // Replace with route
-          console.log("Navigate to portfolio");
+          router.push('/portfolio');          
         }}
       >
-        {/*Background Image*/}
+        {/*Background image left*/}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url("/portfolio.png")' }}
@@ -31,7 +32,7 @@ export default function PortfolioLanding() {
           <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
-        {/* Content */}
+        {/*Content*/}
         <div className="relative z-10 h-full flex flex-col justify-center items-center text-white p-8">
           <div
             className={`transform transition-all duration-500 ${
@@ -86,11 +87,10 @@ export default function PortfolioLanding() {
         onMouseEnter={() => setHoveredSide("music")}
         onMouseLeave={() => setHoveredSide(null)}
         onClick={() => {
-          // Replace route
-          console.log("Navigate to music");
+          /* router.push('/music'); */
         }}
       >
-        {/* Background Gradient */}
+        {/* Background image right */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url("/festival.png")' }}
