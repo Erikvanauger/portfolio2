@@ -12,5 +12,18 @@ export const sv = {
   projects: {
     titlePart1: "Mina",
     titlePart2: "Projekt"
+  },
+  about: {
+    titlePart1: "Om",
+    titlePart2: "Mig",
+    description1:
+    "Jag är en frontendutvecklare med fokus på React och Tailwind CSS som brinner för att skapa användarvänliga, snygga och logiska lösningar där både funktion och form samspelar. ",
+    description2:"Jag har ett starkt intresse för UX och design, och gillar att grotta ner mig i detaljer tills allt känns helt rätt. " +
+    "Nya tekniker och verktyg är alltid lockande, och jag ger mig inte förrän jag verkligen förstår hur saker fungerar på djupet. ",
+    description3: "Det jag inte redan kan ser jag som en spännande utmaning snarare än ett hinder, och i samarbeten tycker jag att det är minst lika givande att hjälpa andra lösa problem som att lösa dem själv."
+  },
+  contact: {
+    titlePart1: "Kontakta",
+    titlePart2: "Mig"
   }
 };
