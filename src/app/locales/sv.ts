@@ -9,4 +9,8 @@ export const sv = {
     title: "Min Portfolio",
     subtitle: "Skapar digitala upplevelser genom kod, kreativitet och ständig utveckling",
   },
+  projects: {
+    titlePart1: "Mina",
+    titlePart2: "Projekt"
+  }
 };

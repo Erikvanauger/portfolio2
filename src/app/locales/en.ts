@@ -9,4 +9,8 @@ export const en = {
     title: "My Portfolio",
     subtitle: "Crafting digital experiences through code, creativity, and continuous learning",
   },
+  projects:{
+    titlePart1: "Featured",
+    titlePart2: "Projects"
+  }
 };

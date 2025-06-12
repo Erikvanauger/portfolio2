@@ -40,7 +40,7 @@ export default function Portfolio() {
                 {t.nav.contact}
               </a>
             </div>
-            {/* Språkändring */}
+            {/*Change language*/}
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value as "en" | "sv")}
@@ -59,11 +59,20 @@ export default function Portfolio() {
             <Code size={48} className="text-white" />
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            My <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Portfolio</span>
+            {t.hero.title}
           </h1>
           <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto">
-            Crafting digital experiences through code, creativity, and continuous learning
+            {t.hero.subtitle}
           </p>
+        </div>
+      </section>
+
+      {/*Projects*/}
+      <section id="projects" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-16 text-center">
+                {t.projects.titlePart1}<span className="ml-4 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">{t.projects.titlePart2}</span>
+            </h2>
         </div>
       </section>
     </div>
