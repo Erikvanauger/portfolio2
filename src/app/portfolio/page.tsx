@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import { ArrowLeft, Calendar, Code, Github, Globe, MapPin } from "lucide-react"
+import { ArrowLeft, Calendar, Code, Github, Globe, Mail, MapPin } from "lucide-react"
 import { useTranslation } from "../hooks/useTranslation";
 
 export default function Portfolio() {
@@ -108,8 +108,8 @@ export default function Portfolio() {
           <div
             key={project.id}
             className="relative group bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 transition-all duration-500 hover:scale-105 hover:bg-white/15"
-            onMouseEnter={() => setHoveredProject(project.id)}
-            onMouseLeave={() => setHoveredProject(null)}
+            /* onMouseEnter={() => setHoveredProject(project.id)}
+            onMouseLeave={() => setHoveredProject(null)} */
           >
             {/* Project Image */}
             <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 relative overflow-hidden">
@@ -193,11 +193,11 @@ export default function Portfolio() {
                 <div className="flex items-center space-x-6 pt-4">
                   <div className="flex items-center space-x-2 text-white/60">
                     <MapPin size={18} />
-                    <span>Location</span>
+                    <span>{t.about.iconText1}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-white/60">
                     <Calendar size={18} />
-                    <span>Available for Projects</span>
+                    <span>{t.about.iconText2}</span>
                   </div>
                 </div>
               </div>
@@ -206,7 +206,7 @@ export default function Portfolio() {
             {/*Skills*/}
             <div>
               <h3 className="text-2xl font-bold text-white mb-8">
-                Skills & Technologies
+                {t.skills.title}
               </h3>
               <div className="grid grid-cols-3 gap-4">
                 {skills.map((skill, index) => (
@@ -227,11 +227,32 @@ export default function Portfolio() {
       <section id="contact" className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
-            {t.contact.titlePart1}{" "}
-            <span className="bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">
-              {t.contact.titlePart2}
-            </span>
+            {t.contact.titlePart1} <span className="bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent"> {t.contact.titlePart2}</span>
           </h2>
+          
+          <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
+            {t.contact.subtitle}
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a
+              href="mailto:your.email@example.com"
+              className="flex items-center space-x-3 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105"
+            >
+              <Mail size={20} />
+              <span className="font-medium">Get In Touch</span>
+            </a>
+            
+            <a
+              href="https://github.com/yourusername"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full transition-all duration-300"
+            >
+              <Github size={20} />
+              <span className="font-medium">View GitHub</span>
+            </a>
+          </div>
         </div>
       </section>
 

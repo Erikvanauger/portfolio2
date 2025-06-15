@@ -20,10 +20,16 @@ export const sv = {
     "Jag är en frontendutvecklare med fokus på React och Tailwind CSS som brinner för att skapa användarvänliga, snygga och logiska lösningar där både funktion och form samspelar. ",
     description2:"Jag har ett starkt intresse för UX och design, och gillar att grotta ner mig i detaljer tills allt känns helt rätt. " +
     "Nya tekniker och verktyg är alltid lockande, och jag ger mig inte förrän jag verkligen förstår hur saker fungerar på djupet. ",
-    description3: "Det jag inte redan kan ser jag som en spännande utmaning snarare än ett hinder, och i samarbeten tycker jag att det är minst lika givande att hjälpa andra lösa problem som att lösa dem själv."
+    description3: "Det jag inte redan kan ser jag som en spännande utmaning snarare än ett hinder, och i samarbeten tycker jag att det är minst lika givande att hjälpa andra lösa problem som att lösa dem själv.",
+    iconText1:"Plats",
+    iconText2:"Tillgänglig för projekt"
   },
   contact: {
     titlePart1: "Kontakta",
-    titlePart2: "Mig"
-  }
+    titlePart2: "Mig",
+    subtitle:"Jag är alltid intresserad av nya möjligheter. Dags att diskutera hur vi kan jobba tillsammans!"
+  },
+   skills: {
+    title: "Tekniker och färdigheter",
+  },
 };
