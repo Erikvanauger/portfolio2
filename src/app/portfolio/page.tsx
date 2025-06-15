@@ -1,13 +1,35 @@
 "use client"
 import React from "react";
-import { ArrowLeft, Calendar, Code, MapPin } from "lucide-react"
+import { ArrowLeft, Calendar, Code, Github, Globe, MapPin } from "lucide-react"
 import { useTranslation } from "../hooks/useTranslation";
 
 export default function Portfolio() {
     const {t, language, setLanguage} = useTranslation();
-const skills = [
+    const skills = [
     "JavaScript", "React", "TypeScript", "Vue.js",
      "AWS", "Git", "Tailwind CSS"
+  ];
+
+  const projects = [
+    {
+      id: 1,
+      title: "Health App",
+      description: "Full-stack e-commerce solution with React, Node.js, and MongoDB. Features user authentication, payment processing, and admin dashboard.",
+      technologies: ["React", "NextJS", "Tailwind"],
+      image: "/api/placeholder/400/250",
+      liveUrl: "https://your-project.netlify.app",
+      githubUrl: "https://github.com/yourusername/project",
+    },
+    {
+      id: 2,
+      title: "Car Valuation Website",
+      description: "Collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
+      technologies: ["React", "AWS", "Typescript"],
+      image: "/api/placeholder/400/250",
+      liveUrl: "https://your-project.netlify.app",
+      githubUrl: "https://github.com/yourusername/project"
+    },
+    
   ];
 
   return (
@@ -80,6 +102,70 @@ const skills = [
             </span>
           </h2>
         </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map((project) => (
+          <div
+            key={project.id}
+            className="relative group bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 transition-all duration-500 hover:scale-105 hover:bg-white/15"
+            onMouseEnter={() => setHoveredProject(project.id)}
+            onMouseLeave={() => setHoveredProject(null)}
+          >
+            {/* Project Image */}
+            <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.slice(0, 3).map((tech, index) => (
+                    <span
+                      key={index}
+                      className="bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  {project.technologies.length > 3 && (
+                    <span className="bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                      +{project.technologies.length - 3}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Project Content */}
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-white mb-3">
+                {project.title}
+              </h3>
+              <p className="text-white/70 text-sm mb-6 line-clamp-3">
+                {project.description}
+              </p>
+
+              <div className="flex items-center space-x-4">
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300"
+                >
+                  <Globe size={16} />
+                  <span>Live Demo</span>
+                </a>
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors duration-300"
+                >
+                  <Github size={16} />
+                  <span>Code</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
       </section>
 
       {/*About*/}
@@ -88,19 +174,22 @@ const skills = [
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
-                About <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">Me</span>
+                {t.about.titlePart1}{" "}
+                <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                  {t.about.titlePart2}
+                </span>
               </h2>
-              
+
               <div className="space-y-6 text-white/80">
                 <p className="text-lg leading-relaxed">
                   {t.about.description1} <br />
                   {t.about.description2} <br />
                 </p>
-                
+
                 <p className="text-lg leading-relaxed">
                   {t.about.description3}
                 </p>
-                
+
                 <div className="flex items-center space-x-6 pt-4">
                   <div className="flex items-center space-x-2 text-white/60">
                     <MapPin size={18} />
@@ -116,7 +205,9 @@ const skills = [
 
             {/*Skills*/}
             <div>
-              <h3 className="text-2xl font-bold text-white mb-8">Skills & Technologies</h3>
+              <h3 className="text-2xl font-bold text-white mb-8">
+                Skills & Technologies
+              </h3>
               <div className="grid grid-cols-3 gap-4">
                 {skills.map((skill, index) => (
                   <div

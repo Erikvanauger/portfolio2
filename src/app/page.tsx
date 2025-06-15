@@ -48,8 +48,8 @@ export default function PortfolioLanding() {
             </h1>
 
             <p className="text-xl md:text-2xl text-center text-white/90 mb-8 max-w-md">
-              Explore my development projects, web applications, and technical
-              work yadayada
+              Explore my development projects and technical
+              work.
             </p>
 
             <div className="flex items-center justify-center space-x-2 text-lg font-medium">
@@ -114,7 +114,7 @@ export default function PortfolioLanding() {
             </h1>
 
             <p className="text-xl md:text-2xl text-center text-white/90 mb-8 max-w-md">
-              Discover my musical creations, compositions, and yadayada
+              Hobby music projects
             </p>
 
             <div className="flex items-center justify-center space-x-2 text-lg font-medium">

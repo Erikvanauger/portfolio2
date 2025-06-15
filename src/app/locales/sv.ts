@@ -1,6 +1,6 @@
 export const sv = {
   nav: {
-    backHome: "Tillbaka till startsidan",
+    backHome: "Tillbaka",
     projects: "Projekt",
     about: "Om mig",
     contact: "Kontakt",
