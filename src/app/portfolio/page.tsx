@@ -144,7 +144,7 @@ export default function Portfolio() {
 
               <div className="flex items-center space-x-4">
                 <a
-                  href={project.liveUrl}
+                  /* href={project.liveUrl} */
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300"
@@ -153,7 +153,7 @@ export default function Portfolio() {
                   <span>Live Demo</span>
                 </a>
                 <a
-                  href={project.githubUrl}
+                  /* href={project.githubUrl} */
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors duration-300"
