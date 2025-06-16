@@ -110,11 +110,11 @@ export default function PortfolioLanding() {
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center">
-              Music
+              Music/Hobby
             </h1>
 
             <p className="text-xl md:text-2xl text-center text-white/90 mb-8 max-w-md">
-              Hobby music projects
+              Music projects & ideas
             </p>
 
             <div className="flex items-center justify-center space-x-2 text-lg font-medium">
