@@ -26,7 +26,8 @@ export const en = {
    contact: {
     titlePart1: "Let's",
     titlePart2: "Connect",
-    subtitle:"I'm always interested in new opportunities so let's discuss how we can work together!"
+    subtitle:"I'm always interested in new opportunities so let's discuss how we can work together!",
+    buttonText: "Contact"
   },
    skills: {
     title: "Skills & Technologies",

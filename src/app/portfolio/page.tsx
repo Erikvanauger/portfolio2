@@ -1,7 +1,8 @@
 "use client"
 import React from "react";
-import { ArrowLeft, Calendar, Code, Github, Globe, Mail, MapPin } from "lucide-react"
+import { ArrowLeft, BriefcaseBusiness, Calendar, Github, Globe, Mail, MapPin } from "lucide-react"
 import { useTranslation } from "../hooks/useTranslation";
+import { useRouter } from "next/navigation";
 
 export default function Portfolio() {
     const {t, language, setLanguage} = useTranslation();
@@ -9,6 +10,7 @@ export default function Portfolio() {
     "JavaScript", "React", "TypeScript", "Vue.js",
      "AWS", "Git", "Tailwind CSS"
   ];
+  const router = useRouter();
 
   const projects = [
     {
@@ -38,14 +40,14 @@ export default function Portfolio() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => console.log("back to landing")}
+              onClick={() => router.push('/')}
               className="flex items-center space-x-2 text-white hover:text-blue-400 transition-colors duration-300"
             >
               <ArrowLeft size={20} />
               <span className="font-medium">{t.nav.backHome}</span>
             </button>
 
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-6 font-bold">
               <a
                 href="#projects"
                 className="text-white hover:text-blue-400 transition-colors duration-300"
@@ -81,7 +83,7 @@ export default function Portfolio() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-white/10 backdrop-blur-sm rounded-full p-6 mb-8 inline-block">
-            <Code size={48} className="text-white" />
+            <BriefcaseBusiness size={48} className="text-white" />
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
             {t.hero.title}
@@ -103,7 +105,7 @@ export default function Portfolio() {
           </h2>
         </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
         {projects.map((project) => (
           <div
             key={project.id}
@@ -240,7 +242,7 @@ export default function Portfolio() {
               className="flex items-center space-x-3 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105"
             >
               <Mail size={20} />
-              <span className="font-medium">Get In Touch</span>
+              <span className="font-medium">{t.contact.buttonText}</span>
             </a>
             
             <a
@@ -250,7 +252,7 @@ export default function Portfolio() {
               className="flex items-center space-x-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-full transition-all duration-300"
             >
               <Github size={20} />
-              <span className="font-medium">View GitHub</span>
+              <span className="font-medium">GitHub</span>
             </a>
           </div>
         </div>

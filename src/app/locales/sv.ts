@@ -27,7 +27,8 @@ export const sv = {
   contact: {
     titlePart1: "Kontakta",
     titlePart2: "Mig",
-    subtitle:"Jag är alltid intresserad av nya möjligheter. Dags att diskutera hur vi kan jobba tillsammans!"
+    subtitle:"Jag är alltid intresserad av nya möjligheter. Dags att diskutera hur vi kan jobba tillsammans!",
+    buttonText:"Kontakt"
   },
    skills: {
     title: "Tekniker och färdigheter",

@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { Code, Music, ArrowRight, Headphones} from 'lucide-react';
+import { Music, ArrowRight, Headphones, BriefcaseBusiness} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function PortfolioLanding() {
@@ -40,7 +40,7 @@ export default function PortfolioLanding() {
             }`}
           >
             <div className="bg-white/10 backdrop-blur-sm rounded-full p-6 mb-6">
-              <Code size={48} className="text-white" />
+              <BriefcaseBusiness size={48} className="text-white" />
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center">
