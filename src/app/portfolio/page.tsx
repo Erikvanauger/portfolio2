@@ -1,28 +1,47 @@
-"use client"
-import React from "react";
-import { ArrowLeft, BriefcaseBusiness, Calendar, ChevronDown, Github, Globe, Mail, MapPin } from "lucide-react"
+"use client";
+import React, { useState } from "react";
+import {
+  ArrowLeft,
+  BriefcaseBusiness,
+  Calendar,
+  ChevronDown,
+  Github,
+  Globe,
+  Mail,
+  MapPin,
+  Menu,
+  X,
+} from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { useRouter } from "next/navigation";
 import { Listbox } from "@headlessui/react";
 import clsx from "clsx";
 
 export default function Portfolio() {
-    const {t, language, setLanguage} = useTranslation();
-    const router = useRouter();
-    const skills = [
-    "JavaScript", "React", "TypeScript", "Vue.js",
-     "AWS", "Git", "Tailwind CSS"
+  const { t, language, setLanguage } = useTranslation();
+  const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const skills = [
+    "JavaScript",
+    "React",
+    "TypeScript",
+    "Vue.js",
+    "AWS",
+    "Git",
+    "Tailwind CSS",
   ];
   const languages = [
-  { id: "en", name: "English" },
-  { id: "sv", name: "Svenska" },
-];
+    { id: "en", name: "English" },
+    { id: "sv", name: "Svenska" },
+  ];
 
   const projects = [
     {
       id: 1,
       title: "Health App",
-      description: "Full-stack e-commerce solution with React, Node.js, and MongoDB. Features user authentication, payment processing, and admin dashboard.",
+      description:
+        "Full-stack e-commerce solution with React, Node.js, and MongoDB. Features user authentication, payment processing, and admin dashboard.",
       technologies: ["React", "NextJS", "Tailwind"],
       image: "/api/placeholder/400/250",
       liveUrl: "https://your-project.netlify.app",
@@ -31,18 +50,25 @@ export default function Portfolio() {
     {
       id: 2,
       title: "Car Valuation Website",
-      description: "Collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
+      description:
+        "Collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
       technologies: ["React", "AWS", "Typescript"],
       image: "/api/placeholder/400/250",
       liveUrl: "https://your-project.netlify.app",
-      githubUrl: "https://github.com/yourusername/project"
+      githubUrl: "https://github.com/yourusername/project",
     },
-    
   ];
+
+  const handleNavClick = (href: string) => {
+    setIsMobileMenuOpen(false);
+    setTimeout(() => {
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-900 to-slate-900">
-      <nav className="bg-black/30 backdrop-blur-xl border-b border-white/20">
+      <nav className="bg-black/30 backdrop-blur-xl border-b border-white/20 relative z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <button
@@ -55,6 +81,8 @@ export default function Portfolio() {
               />
               <span className="font-medium">{t.nav.backHome}</span>
             </button>
+
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1 bg-white/10 backdrop-blur-sm rounded-full px-2 py-1 border border-white/20">
               <a
                 href="#projects"
@@ -79,32 +107,8 @@ export default function Portfolio() {
               </a>
             </div>
 
-            <div className="md:hidden flex items-center space-x-6 font-bold">
-              <a
-                href="#projects"
-                className="text-white hover:text-blue-400 transition-colors duration-300 relative group"
-              >
-                {t.nav.projects}
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-full"></div>
-              </a>
-              <a
-                href="#about"
-                className="text-white hover:text-purple-400 transition-colors duration-300 relative group"
-              >
-                {t.nav.about}
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-400 transition-all duration-300 group-hover:w-full"></div>
-              </a>
-              <a
-                href="#contact"
-                className="text-white hover:text-pink-400 transition-colors duration-300 relative group"
-              >
-                {t.nav.contact}
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-400 transition-all duration-300 group-hover:w-full"></div>
-              </a>
-            </div>
-
-            {/* Language Selector */}
-            <div className="relative z-50 w-32">
+            {/* Desktop Language Selector */}
+            <div className="hidden md:block relative z-50 w-32">
               <Listbox value={language} onChange={(val) => setLanguage(val)}>
                 <div className="relative">
                   <Listbox.Button className="w-full flex items-center justify-between bg-white/10 backdrop-blur-sm text-white rounded-full px-4 py-2 border border-white/20 hover:bg-white/20 transition-all duration-300 focus:outline-none ">
@@ -133,9 +137,95 @@ export default function Portfolio() {
                 </div>
               </Listbox>
             </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-2 rounded-full border border-white/20 transition-all duration-300 z-50 relative"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          <div
+            className={`md:hidden absolute top-full rounded-b-xl left-0 right-0 bg-black/65 backdrop-blur-xl border-b border-white/20 transition-all duration-300 z-40 ${
+              isMobileMenuOpen 
+                ? "opacity-100 visible transform translate-y-0" 
+                : "opacity-0 invisible transform -translate-y-4"
+            }`}
+          >
+            <div className="px-6 py-4 space-y-4">
+              {/* Mobile Navigation Links */}
+              <div className="space-y-2 font-bold">
+                <button
+                  onClick={() => handleNavClick("#projects")}
+                  className="block w-full text-center text-white hover:text-blue-400 transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-white/10"
+                >
+                  {t.nav.projects}
+                </button>
+                <button
+                  onClick={() => handleNavClick("#about")}
+                  className="block w-full text-center text-white hover:text-purple-400 transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-white/10"
+                >
+                  {t.nav.about}
+                </button>
+                <button
+                  onClick={() => handleNavClick("#contact")}
+                  className="block w-full text-center text-white hover:text-pink-400 transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-white/10"
+                >
+                  {t.nav.contact}
+                </button>
+              </div>
+
+              {/* Mobile Language Selector */}
+              <div className="pt-4 border-t border-white/20">
+                <div className="relative z-50">
+                  <Listbox
+                    value={language}
+                    onChange={(val) => setLanguage(val)}
+                  >
+                    <div className="relative">
+                      <Listbox.Button className="w-full flex items-center justify-between bg-white/10 backdrop-blur-sm text-white rounded-lg px-4 py-3 border border-white/20 hover:bg-white/20 transition-all duration-300 focus:outline-none">
+                        <span>
+                          {languages.find((lang) => lang.id === language)?.name}
+                        </span>
+                        <ChevronDown className="w-4 h-4 text-white/70" />
+                      </Listbox.Button>
+                      <Listbox.Options className="absolute mt-1 w-full bg-black/90 text-white backdrop-blur-md rounded-lg border border-white/10 shadow-lg overflow-hidden">
+                        {languages.map((lang) => (
+                          <Listbox.Option
+                            key={lang.id}
+                            value={lang.id}
+                            className={({ active, selected }) =>
+                              clsx(
+                                "px-4 py-3 cursor-pointer transition-colors",
+                                active ? "bg-white/20" : "",
+                                selected ? "font-semibold" : ""
+                              )
+                            }
+                          >
+                            {lang.name}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </div>
+                  </Listbox>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/*Hero*/}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
@@ -167,8 +257,6 @@ export default function Portfolio() {
             <div
               key={project.id}
               className="relative group bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 transition-all duration-500 hover:scale-105 hover:bg-white/15"
-              /* onMouseEnter={() => setHoveredProject(project.id)}
-            onMouseLeave={() => setHoveredProject(null)} */
             >
               {/* Project Image */}
               <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 relative overflow-hidden">
@@ -203,7 +291,7 @@ export default function Portfolio() {
 
                 <div className="flex items-center space-x-4">
                   <a
-                    /* href={project.liveUrl} */
+                    href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300"
@@ -212,7 +300,7 @@ export default function Portfolio() {
                     <span>Live Demo</span>
                   </a>
                   <a
-                    /* href={project.githubUrl} */
+                    href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors duration-300"
