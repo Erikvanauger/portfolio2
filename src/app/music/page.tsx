@@ -16,9 +16,58 @@ export default function MusicPlayer(): JSX.Element {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [volume, setVolume] = useState<number>(1);
+  const [audioData, setAudioData] = useState<number>(0.5);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const animationRef = useRef<number | null>(null);
+
+  // Audio analysis for blob animation
+  const setupAudioContext = (): void => {
+    const audio = audioRef.current;
+    if (!audio || audioContextRef.current) return;
+
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaElementSource(audio);
+      
+      analyser.fftSize = 256;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+      
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      dataArrayRef.current = dataArray;
+      sourceRef.current = source;
+      
+      updateAudioData();
+    } catch (error) {
+      console.error('Error setting up audio context:', error);
+    }
+  };
+
+  const updateAudioData = (): void => {
+    if (!analyserRef.current || !dataArrayRef.current) return;
+    
+    analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+    
+    //blob intensity
+    const average = dataArrayRef.current.reduce((sum, value) => sum + value, 0) / dataArrayRef.current.length;
+    const normalizedData = average / 255;
+    
+    setAudioData(isPlaying ? Math.max(0.4, normalizedData) : 0.2);
+    
+    if (isPlaying) {
+      animationRef.current = requestAnimationFrame(updateAudioData);
+    }
+  };
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -44,16 +93,39 @@ export default function MusicPlayer(): JSX.Element {
       }
     };
 
+    const handlePlay = (): void => {
+      if (!audioContextRef.current) {
+        setupAudioContext();
+      }
+      if (audioContextRef.current?.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+      updateAudioData();
+    };
+
+    const handlePause = (): void => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+
     audio.addEventListener('timeupdate', updateTime);
     audio.addEventListener('loadedmetadata', updateDuration);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
-  }, [currentTrack, playlist.length]);
+  }, [currentTrack, playlist.length, isPlaying]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -163,21 +235,98 @@ export default function MusicPlayer(): JSX.Element {
 
   const currentTrackData = playlist[currentTrack];
 
+  // blob animation styles
+  const blobScale = 0.8 + (audioData * 1.2);
+  const blobOpacity = 0.6 + (audioData * 0.4);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-4 relative overflow-hidden">
+      {/* main background blob */}
+      <div 
+        className="fixed top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
+        style={{
+          transform: `translate(-50%, -50%) scale(${blobScale})`,
+          opacity: blobOpacity,
+          transition: 'transform 0.05s ease-out, opacity 0.2s ease-out'
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-br from-pink-500/60 via-purple-500/60 to-blue-500/60 rounded-full blur-3xl animate-pulse" />
+      </div>
+      
+      {/* 2nd blob top right */}
+      <div 
+        className="fixed top-1/4 right-1/4 w-80 h-80 pointer-events-none z-0"
+        style={{
+          transform: `scale(${0.5 + (audioData * 0.8)})`,
+          opacity: blobOpacity * 0.8,
+          transition: 'transform 0.1s ease-out, opacity 0.2s ease-out'
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-tl from-cyan-400/50 via-blue-500/50 to-purple-600/50 rounded-full blur-2xl animate-pulse" 
+             style={{ animationDelay: '0.5s' }} />
+      </div>
+
+      {/* 3rd blob bottom left */}
+      <div 
+        className="fixed bottom-1/4 left-1/4 w-64 h-64 pointer-events-none z-0"
+        style={{
+          transform: `scale(${0.6 + (audioData * 0.7)})`,
+          opacity: blobOpacity * 0.7,
+          transition: 'transform 0.15s ease-out, opacity 0.2s ease-out'
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-tr from-green-400/40 via-teal-500/40 to-blue-600/40 rounded-full blur-xl animate-pulse" 
+             style={{ animationDelay: '1s' }} />
+      </div>
+
+      {/* 4th blob top left */}
+      <div 
+        className="fixed top-1/3 left-1/6 w-48 h-48 pointer-events-none z-0"
+        style={{
+          transform: `scale(${0.4 + (audioData * 0.6)})`,
+          opacity: blobOpacity * 0.6,
+          transition: 'transform 0.2s ease-out, opacity 0.2s ease-out'
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-br from-yellow-400/30 via-orange-500/30 to-red-500/30 rounded-full blur-xl animate-pulse" 
+             style={{ animationDelay: '1.5s' }} />
+      </div>
+
+      {/* 5th blob bottom right */}
+      <div 
+        className="fixed bottom-1/3 right-1/6 w-56 h-56 pointer-events-none z-0"
+        style={{
+          transform: `scale(${0.5 + (audioData * 0.9)})`,
+          opacity: blobOpacity * 0.5,
+          transition: 'transform 0.12s ease-out, opacity 0.2s ease-out'
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-bl from-violet-400/35 via-indigo-500/35 to-blue-600/35 rounded-full blur-2xl animate-pulse" 
+             style={{ animationDelay: '2s' }} />
+      </div>
+
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Music Player</h1>
           <p className="text-blue-200">Your personal audio experience</p>
         </div>
 
-        {/* Main Player Card */}
+        {/* Main player card */}
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-6 border border-white/20">
-          {/* Current Track Display */}
           <div className="text-center mb-8">
-            <div className="w-32 h-32 mx-auto mb-4 bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
-              <Music size={48} className="text-white" />
+            <div className="relative w-32 h-32 mx-auto mb-4">
+              {/* Pulsating ring around album */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-purple-600/70 rounded-2xl blur-sm"
+                style={{
+                  transform: `scale(${1 + (audioData * 0.3)})`,
+                  transition: 'transform 0.05s ease-out'
+                }}
+              />
+              <div className="relative w-full h-full bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                <Music size={48} className="text-white" />
+              </div>
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">
               {currentTrackData ? currentTrackData.name : 'No track selected'}
@@ -220,6 +369,10 @@ export default function MusicPlayer(): JSX.Element {
               onClick={togglePlay}
               disabled={playlist.length === 0}
               className="p-4 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
+              style={{
+                transform: isPlaying ? `scale(${1 + (audioData * 0.15)})` : 'scale(1)',
+                transition: 'transform 0.05s ease-out'
+              }}
             >
               {isPlaying ? <Pause size={32} className="text-white" /> : <Play size={32} className="text-white" />}
             </button>
@@ -318,6 +471,7 @@ export default function MusicPlayer(): JSX.Element {
                 setDuration(audio.duration);
               }
             }}
+            crossOrigin="anonymous"
           />
         )}
       </div>
