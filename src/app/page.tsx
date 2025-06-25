@@ -87,7 +87,7 @@ export default function PortfolioLanding() {
         onMouseEnter={() => setHoveredSide("music")}
         onMouseLeave={() => setHoveredSide(null)}
         onClick={() => {
-          /* router.push('/music'); */
+          router.push('/music'); 
         }}
       >
         {/* Background image right */}
