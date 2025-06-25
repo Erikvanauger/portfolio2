@@ -11,7 +11,15 @@ export const sv = {
   },
   projects: {
     titlePart1: "Mina",
-    titlePart2: "Projekt"
+    titlePart2: "Projekt",
+    project1: {
+        title: "Hälso-App",
+        description: "En hälsoapplikation där användare kan logga in, registrera sina uppgifter och få uträknat kalori- och vätskeintag baserat på olika träningsmål. Appen erbjuder även tips på nyttiga måltider som stöd i vardagen.",
+      },
+      project2: {
+        title: "Bilvärderingshemsida",
+        description: "En bilvärderingssida vi byggde under min praktik på Novalo Technologies. Använder dummydata just nu, men ska hämta från biluppgifter.se.",
+      },
   },
   about: {
     titlePart1: "Om",

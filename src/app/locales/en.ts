@@ -11,8 +11,17 @@ export const en = {
   },
   projects:{
     titlePart1: "Featured",
-    titlePart2: "Projects"
+    titlePart2: "Projects",
+    project1: {
+      title: "Health App",
+        description: "A health application where users can log in, track their personal data, and receive calculated calorie and water intake based on different fitness goals. The app also offers tips on healthy meals to support users in their daily routines.",
+    },
+    project2: {
+      title: "Car Valuation Website",
+        description: "A car valuation website we built from scratch during my internship at Novalo Technologies. The site currently uses dummy data, but will eventually fetch real data from biluppgifter.se",
+    }
   },
+
   about: {
     titlePart1: "About",
     titlePart2: "Me",

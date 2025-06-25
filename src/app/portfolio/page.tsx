@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Listbox } from "@headlessui/react";
 import clsx from "clsx";
 
@@ -39,20 +40,18 @@ export default function Portfolio() {
   const projects = [
     {
       id: 1,
-      title: "Health App",
-      description:
-        "Full-stack e-commerce solution with React, Node.js, and MongoDB. Features user authentication, payment processing, and admin dashboard.",
+      title: t.projects.project1.title,
+      description: t.projects.project1.description,
       technologies: ["React", "NextJS", "Tailwind"],
-      image: "/api/placeholder/400/250",
-      liveUrl: "https://your-project.netlify.app",
-      githubUrl: "https://github.com/yourusername/project",
+      image: "/dashboard2.png",
+      liveUrl: "https://forgebod.netlify.app/",
+      githubUrl: "https://github.com/Erikvanauger/fitness-app",
     },
     {
       id: 2,
-      title: "Car Valuation Website",
-      description:
-        "Collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
-      technologies: ["React", "AWS", "Typescript"],
+      title: t.projects.project2.title,
+      description: t.projects.project2.description,
+      technologies: ["React", "AWS", "NextJS", "Typescript"],
       image: "/api/placeholder/400/250",
       liveUrl: "https://your-project.netlify.app",
       githubUrl: "https://github.com/yourusername/project",
@@ -150,8 +149,8 @@ export default function Portfolio() {
           {/* Mobile Menu */}
           <div
             className={`md:hidden absolute top-full rounded-b-xl left-0 right-0 bg-black/65 backdrop-blur-xl border-b border-white/20 transition-all duration-300 z-40 ${
-              isMobileMenuOpen 
-                ? "opacity-100 visible transform translate-y-0" 
+              isMobileMenuOpen
+                ? "opacity-100 visible transform translate-y-0"
                 : "opacity-0 invisible transform -translate-y-4"
             }`}
           >
@@ -260,6 +259,12 @@ export default function Portfolio() {
             >
               {/* Project Image */}
               <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 relative overflow-hidden">
+                <Image
+                  src={project.image}
+                  layout="fill"
+                  alt={project.title}
+                  objectFit="cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="flex flex-wrap gap-2">
