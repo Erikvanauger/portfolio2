@@ -17,6 +17,7 @@ export default function MusicPlayer(): JSX.Element {
   const [duration, setDuration] = useState<number>(0);
   const [volume, setVolume] = useState<number>(1);
   const [audioData, setAudioData] = useState<number>(0.5);
+  const [frequencyData, setFrequencyData] = useState<number[]>(new Array(64).fill(0));
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -25,7 +26,6 @@ export default function MusicPlayer(): JSX.Element {
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const animationRef = useRef<number | null>(null);
 
-  // Audio analysis for blob animation
   const setupAudioContext = (): void => {
     const audio = audioRef.current;
     if (!audio || audioContextRef.current) return;
@@ -35,7 +35,7 @@ export default function MusicPlayer(): JSX.Element {
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaElementSource(audio);
       
-      analyser.fftSize = 256;
+      analyser.fftSize = 512;
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
       
@@ -55,15 +55,33 @@ export default function MusicPlayer(): JSX.Element {
 
   const updateAudioData = (): void => {
     if (!analyserRef.current || !dataArrayRef.current) return;
-    
+
     analyserRef.current.getByteFrequencyData(dataArrayRef.current);
-    
-    //blob intensity
-    const average = dataArrayRef.current.reduce((sum, value) => sum + value, 0) / dataArrayRef.current.length;
+
+    // Update blob intensity
+    const average =
+      dataArrayRef.current.reduce((sum, value) => sum + value, 0) /
+      dataArrayRef.current.length;
     const normalizedData = average / 255;
-    
+
     setAudioData(isPlaying ? Math.max(0.4, normalizedData) : 0.2);
-    
+
+    // Update frequency data for visualizer 
+    const frequencyBars = 64;
+    const dataArray = dataArrayRef.current;
+    const newFrequencyData: number[] = [];
+
+    for (let i = 0; i < frequencyBars; i++) {
+      const index = Math.floor(
+        Math.pow(i / frequencyBars, 1.7) * dataArray.length
+      );
+      const value = dataArray[index] / 255;
+      const enhanced = Math.min(value * 1.7, 1); // Boosts, but clips
+      newFrequencyData.push(enhanced);
+    }
+
+    setFrequencyData(newFrequencyData);
+
     if (isPlaying) {
       animationRef.current = requestAnimationFrame(updateAudioData);
     }
@@ -314,9 +332,55 @@ export default function MusicPlayer(): JSX.Element {
 
         {/* Main player card */}
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-6 border border-white/20">
+          {/* Music Visualizer */}
+          <div className="mb-8">
+            <div className="relative h-32 bg-black/20 rounded-2xl p-4 overflow-hidden">
+              {/* Visualizer background glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-2xl blur-xl" />
+              
+              {/* Frequency bars */}
+              <div className="relative flex items-end justify-center gap-1 h-full">
+                {frequencyData.map((value, index) => {
+                  const height = Math.max(4, value * 100); // Minimum height of 4px
+                  const hue = (index / frequencyData.length) * 360; // Rainbow effect
+                  
+                  return (
+                    <div
+                      key={index}
+                      className="bg-gradient-to-t from-current to-transparent rounded-t-sm transition-all duration-75 ease-out"
+                      style={{
+                        height: `${height}%`,
+                        width: '4px',
+                        color: `hsl(${hue}, 70%, 60%)`,
+                        opacity: 0.8 + (value * 0.2),
+                        filter: `brightness(${1 + (value * 0.5)})`,
+                        boxShadow: `0 0 ${value * 10}px hsl(${hue}, 70%, 60%)`
+                      }}
+                    />
+                  );
+                })}
+              </div>
+              
+              {/* Reflection on eq visualizer */}
+              <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/30 to-transparent rounded-b-2xl" />
+              
+              {/* Center frequency indicator */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div 
+                  className="w-4 h-4 rounded-full bg-white/30 blur-sm"
+                  style={{
+                    transform: `scale(${1 + (audioData * 2)})`,
+                    opacity: audioData,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="text-center mb-8">
             <div className="relative w-32 h-32 mx-auto mb-4">
-              {/* Pulsating ring around album */}
+              {/* ring around album */}
               <div 
                 className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-purple-600/70 rounded-2xl blur-sm"
                 style={{
@@ -386,7 +450,7 @@ export default function MusicPlayer(): JSX.Element {
             </button>
           </div>
 
-          {/* Volume Control */}
+          {/* Volume */}
           <div className="flex items-center justify-center gap-3">
             <Volume2 size={20} className="text-white" />
             <input
