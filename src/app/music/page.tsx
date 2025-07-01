@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef, useEffect, JSX } from 'react';
+import React, { useState, useRef, useEffect, JSX, useCallback } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, Plus, Music, X } from 'lucide-react';
 
 interface Track {
@@ -7,6 +7,11 @@ interface Track {
   name: string;
   url: string;
   file: File;
+}
+
+// Add interface for WebKit audio context
+interface WebkitWindow extends Window {
+  webkitAudioContext?: typeof AudioContext;
 }
 
 export default function MusicPlayer(): JSX.Element {
@@ -26,34 +31,7 @@ export default function MusicPlayer(): JSX.Element {
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const animationRef = useRef<number | null>(null);
 
-  const setupAudioContext = (): void => {
-    const audio = audioRef.current;
-    if (!audio || audioContextRef.current) return;
-
-    try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaElementSource(audio);
-      
-      analyser.fftSize = 512;
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-      
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
-      
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-      dataArrayRef.current = dataArray;
-      sourceRef.current = source;
-      
-      updateAudioData();
-    } catch (error) {
-      console.error('Error setting up audio context:', error);
-    }
-  };
-
-  const updateAudioData = (): void => {
+  const updateAudioData = useCallback((): void => {
     if (!analyserRef.current || !dataArrayRef.current) return;
 
     analyserRef.current.getByteFrequencyData(dataArrayRef.current);
@@ -85,7 +63,34 @@ export default function MusicPlayer(): JSX.Element {
     if (isPlaying) {
       animationRef.current = requestAnimationFrame(updateAudioData);
     }
-  };
+  }, [isPlaying]);
+
+  const setupAudioContext = useCallback((): void => {
+    const audio = audioRef.current;
+    if (!audio || audioContextRef.current) return;
+
+    try {
+      const audioContext = new (window.AudioContext || (window as unknown as WebkitWindow).webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaElementSource(audio);
+      
+      analyser.fftSize = 512;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+      
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      dataArrayRef.current = dataArray;
+      sourceRef.current = source;
+      
+      updateAudioData();
+    } catch (error) {
+      console.error('Error setting up audio context:', error);
+    }
+  }, [updateAudioData]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -143,7 +148,7 @@ export default function MusicPlayer(): JSX.Element {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [currentTrack, playlist.length, isPlaying]);
+  }, [currentTrack, playlist.length, isPlaying, setupAudioContext, updateAudioData]);
 
   useEffect(() => {
     const audio = audioRef.current;
