@@ -9,7 +9,7 @@ interface Track {
   file: File;
 }
 
-// Add interface for WebKit audio context
+//interface for WebKit audio context
 interface WebkitWindow extends Window {
   webkitAudioContext?: typeof AudioContext;
 }
@@ -54,7 +54,7 @@ export default function MusicPlayer(): JSX.Element {
         Math.pow(i / frequencyBars, 1.7) * dataArray.length
       );
       const value = dataArray[index] / 255;
-      const enhanced = Math.min(value * 1.7, 1); // Boosts, but clips
+      const enhanced = Math.min(value * 1.4, 1); // Boosts, but clips
       newFrequencyData.push(enhanced);
     }
 
@@ -263,7 +263,7 @@ export default function MusicPlayer(): JSX.Element {
   const blobOpacity = 0.6 + (audioData * 0.4);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-neutral-800 to-zinc-700 p-4 relative overflow-hidden">
       {/* main background blob */}
       <div 
         className="fixed top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
@@ -273,15 +273,15 @@ export default function MusicPlayer(): JSX.Element {
           transition: 'transform 0.05s ease-out, opacity 0.2s ease-out'
         }}
       >
-        <div className="w-full h-full bg-gradient-to-br from-pink-500/60 via-purple-500/60 to-blue-500/60 rounded-full blur-3xl animate-pulse" />
+        <div className="w-full h-full bg-gradient-to-br from-blue-700/60 via-indigo-800/60 to-cyan-600/60 rounded-full blur-3xl animate-pulse" />
       </div>
       
       {/* 2nd blob top right */}
       <div 
-        className="fixed top-1/4 right-1/4 w-80 h-80 pointer-events-none z-0"
+        className="fixed top-1/4 right-1/6 w-80 h-80 pointer-events-none z-0"
         style={{
           transform: `scale(${0.5 + (audioData * 0.8)})`,
-          opacity: blobOpacity * 0.8,
+          opacity: blobOpacity * 0.5,
           transition: 'transform 0.1s ease-out, opacity 0.2s ease-out'
         }}
       >
@@ -291,14 +291,14 @@ export default function MusicPlayer(): JSX.Element {
 
       {/* 3rd blob bottom left */}
       <div 
-        className="fixed bottom-1/4 left-1/4 w-64 h-64 pointer-events-none z-0"
+        className="fixed bottom-1/6 left-1/4 w-64 h-64 pointer-events-none z-0"
         style={{
-          transform: `scale(${0.6 + (audioData * 0.7)})`,
+          transform: `scale(${0.5 + (audioData * 0.7)})`,
           opacity: blobOpacity * 0.7,
           transition: 'transform 0.15s ease-out, opacity 0.2s ease-out'
         }}
       >
-        <div className="w-full h-full bg-gradient-to-tr from-green-400/40 via-teal-500/40 to-blue-600/40 rounded-full blur-xl animate-pulse" 
+        <div className="w-full h-full bg-gradient-to-tr from-sky-500/35 via-blue-700/35 to-indigo-800/35 rounded-full blur-xl animate-pulse" 
              style={{ animationDelay: '1s' }} />
       </div>
 
@@ -311,7 +311,7 @@ export default function MusicPlayer(): JSX.Element {
           transition: 'transform 0.2s ease-out, opacity 0.2s ease-out'
         }}
       >
-        <div className="w-full h-full bg-gradient-to-br from-yellow-400/30 via-orange-500/30 to-red-500/30 rounded-full blur-xl animate-pulse" 
+        <div className="w-full h-full bg-gradient-to-br from-blue-700/60 via-indigo-800/60 to-cyan-600/60 rounded-full blur-xl animate-pulse" 
              style={{ animationDelay: '1.5s' }} />
       </div>
 
@@ -321,32 +321,31 @@ export default function MusicPlayer(): JSX.Element {
         style={{
           transform: `scale(${0.5 + (audioData * 0.9)})`,
           opacity: blobOpacity * 0.5,
-          transition: 'transform 0.12s ease-out, opacity 0.2s ease-out'
+          transition: 'transform 0.12s ease-out, opacity 0.2s ease-out' 
         }}
       >
-        <div className="w-full h-full bg-gradient-to-bl from-violet-400/35 via-indigo-500/35 to-blue-600/35 rounded-full blur-2xl animate-pulse" 
+        <div className="w-full h-full bg-gradient-to-bl from-sky-500/35 via-blue-700/35 to-indigo-800/35 rounded-full blur-2xl animate-pulse" 
              style={{ animationDelay: '2s' }} />
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Music Player</h1>
-          <p className="text-blue-200">Your personal audio experience</p>
+          <h1 className="text-4xl font-bold text-white mb-2" >Portfolio Player</h1>
         </div>
 
         {/* Main player card */}
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-6 border border-white/20">
           {/* Music Visualizer */}
           <div className="mb-8">
-            <div className="relative h-32 bg-black/20 rounded-2xl p-4 overflow-hidden">
+            <div className="relative h-28 w-4/5 mx-auto bg-black/20 rounded-2xl p-4 overflow-hidden">
               {/* Visualizer background glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-2xl blur-xl" />
               
               {/* Frequency bars */}
-              <div className="relative flex items-end justify-center gap-1 h-full">
+              <div className="relative flex items-end justify-center gap-2 h-full">
                 {frequencyData.map((value, index) => {
-                  const height = Math.max(4, value * 100); // Minimum height of 4px
+                  const height = Math.max(4, value * 100);
                   const hue = (index / frequencyData.length) * 360; // Rainbow effect
                   
                   return (
@@ -389,7 +388,7 @@ export default function MusicPlayer(): JSX.Element {
               <div 
                 className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-purple-600/70 rounded-2xl blur-sm"
                 style={{
-                  transform: `scale(${1 + (audioData * 0.3)})`,
+                  transform: `scale(${0.9 + (audioData * 0.2)})`,
                   transition: 'transform 0.05s ease-out'
                 }}
               />
@@ -413,7 +412,7 @@ export default function MusicPlayer(): JSX.Element {
                 onClick={handleSeek}
               >
                 <div 
-                  className="h-full bg-gradient-to-r from-pink-400 to-purple-500 rounded-full transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-cyan-400 to-sky-500 rounded-full transition-all duration-300"
                   style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
                 />
               </div>
@@ -437,7 +436,7 @@ export default function MusicPlayer(): JSX.Element {
             <button
               onClick={togglePlay}
               disabled={playlist.length === 0}
-              className="p-4 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
+              className="p-4 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
               style={{
                 transform: isPlaying ? `scale(${1 + (audioData * 0.15)})` : 'scale(1)',
                 transition: 'transform 0.05s ease-out'
@@ -465,7 +464,7 @@ export default function MusicPlayer(): JSX.Element {
               step="0.1"
               value={volume}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVolume(parseFloat(e.target.value))}
-              className="w-32 accent-purple-500"
+              className="w-32 accent-sky-700"
             />
             <span className="text-white text-sm w-8">{Math.round(volume * 100)}%</span>
           </div>
@@ -483,7 +482,7 @@ export default function MusicPlayer(): JSX.Element {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white rounded-full font-semibold transition-all duration-200 shadow-lg"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white rounded-full font-semibold transition-all duration-200 shadow-lg"
           >
             <Plus size={20} />
             Add Music
