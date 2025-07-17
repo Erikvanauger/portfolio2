@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useRef, useEffect, JSX, useCallback } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X } from 'lucide-react';
-import { supabase } from '../supabase/supabaseClient';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X, RefreshCw } from 'lucide-react';
+import { getSongs, getSongsFromBucket } from './getSongs';
 
 interface Track {
   id: number;
@@ -11,6 +11,7 @@ interface Track {
   duration?: number;
   file_path?: string;
 }
+
 interface WebkitWindow extends Window {
   webkitAudioContext?: typeof AudioContext;
 }
@@ -135,11 +136,17 @@ export default function MusicPlayer(): JSX.Element {
       }
     };
 
+    const handleError = (e: Event): void => {
+      console.error('Audio error:', e);
+      setError('Error loading audio file');
+    };
+
     audio.addEventListener('timeupdate', updateTime);
     audio.addEventListener('loadedmetadata', updateDuration);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
+    audio.addEventListener('error', handleError);
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
@@ -147,6 +154,7 @@ export default function MusicPlayer(): JSX.Element {
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('error', handleError);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -160,51 +168,42 @@ export default function MusicPlayer(): JSX.Element {
     }
   }, [volume]);
 
-  // Fixed function to load tracks from Supabase
+  // Load tracks from Supabase
   const loadTracksFromDatabase = async (): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
-
-      const { data, error } = await supabase.storage.from('music').list('', {
-        limit: 100,
-        offset: 0,
-      });
-
-      if (error) {
-        console.error("Error fetching tracks:", error.message);
-        setError("Failed to load tracks from database");
-        return;
+      
+      // First try with default function
+      let tracks = await getSongs();
+      
+      // If no tracks found, try different bucket names
+      if (tracks.length === 0) {
+        console.log('No tracks found in default location, trying alternative buckets...');
+        const alternativeBuckets = ['songlist1', 'music-files', 'audio', 'songs'];
+        
+        for (const bucketName of alternativeBuckets) {
+          try {
+            tracks = await getSongsFromBucket(bucketName);
+            if (tracks.length > 0) {
+              console.log(`Found ${tracks.length} tracks in bucket: ${bucketName}`);
+              break;
+            }
+          } catch (err) {
+            console.log(`Bucket ${bucketName} not accessible:`, err);
+          }
+        }
       }
 
-      if (data) {
-        // Filter out non-audio files and build playlist
-        const audioFiles = data.filter(file => {
-          const ext = file.name.toLowerCase().split('.').pop();
-          return ext && ['mp3', 'wav', 'ogg', 'm4a', 'flac'].includes(ext);
-        });
-
-        const tracks: Track[] = audioFiles.map((file, index) => {
-          const { data: urlData } = supabase.storage
-            .from("songlist1")
-            .getPublicUrl(file.name);
-
-          return {
-            id: index,
-            name: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
-            url: urlData?.publicUrl || "", // Säkrare fallback
-            artist: "Unknown Artist",
-            file_path: file.name,
-            duration: undefined,
-          };
-        });
-
+      if (tracks.length === 0) {
+        setError("No audio files found in Supabase storage. Please check your bucket name and upload some audio files.");
+      } else {
         setPlaylist(tracks);
-        console.log(`Loaded ${tracks.length} tracks from database`);
+        console.log(`Successfully loaded ${tracks.length} tracks`);
       }
     } catch (err) {
-      console.error("Unexpected error loading tracks:", err);
-      setError("Unexpected error occurred while loading tracks");
+      console.error("Error loading tracks:", err);
+      setError(`Failed to load tracks: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -223,23 +222,33 @@ export default function MusicPlayer(): JSX.Element {
     if (isPlaying) {
       audio.pause();
     } else {
-      audio.play().catch(console.error);
+      audio.play().catch((err) => {
+        console.error('Play failed:', err);
+        setError('Failed to play audio. Please check the file URL.');
+      });
     }
     setIsPlaying(!isPlaying);
   };
 
   const playTrack = (index: number): void => {
+    if (index < 0 || index >= playlist.length) return;
+    
     setCurrentTrack(index);
     setIsPlaying(true);
+    setError(null); // Clear any previous errors
+    
     setTimeout(() => {
       const audio = audioRef.current;
       if (audio) {
-        audio.play().catch(console.error);
+        audio.play().catch((err) => {
+          console.error('Play failed:', err);
+          setError('Failed to play audio. Please check the file URL.');
+          setIsPlaying(false);
+        });
       }
     }, 100);
   };
 
-  // Fixed handlePlayTrack function
   const handlePlayTrack = (track: Track): void => {
     const index = playlist.findIndex(t => t.id === track.id);
     if (index !== -1) {
@@ -249,27 +258,13 @@ export default function MusicPlayer(): JSX.Element {
 
   const previousTrack = (): void => {
     if (currentTrack > 0) {
-      setCurrentTrack(currentTrack - 1);
-      setIsPlaying(true);
-      setTimeout(() => {
-        const audio = audioRef.current;
-        if (audio) {
-          audio.play().catch(console.error);
-        }
-      }, 100);
+      playTrack(currentTrack - 1);
     }
   };
 
   const nextTrack = (): void => {
     if (currentTrack < playlist.length - 1) {
-      setCurrentTrack(currentTrack + 1);
-      setIsPlaying(true);
-      setTimeout(() => {
-        const audio = audioRef.current;
-        if (audio) {
-          audio.play().catch(console.error);
-        }
-      }, 100);
+      playTrack(currentTrack + 1);
     }
   };
 
@@ -394,6 +389,17 @@ export default function MusicPlayer(): JSX.Element {
             Portfolio Player
           </h1>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 text-red-300">
+              <X size={20} />
+              <span className="font-medium">Error:</span>
+            </div>
+            <p className="text-red-200 mt-1">{error}</p>
+          </div>
+        )}
 
         {/* Main player card */}
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-6 border border-white/20">
@@ -547,25 +553,37 @@ export default function MusicPlayer(): JSX.Element {
           </div>
         </div>
 
-        {/* Music Library from Database */}
+        {/* Music library from database */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-6">
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <Music size={24} />
-            Music Library
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <Music size={24} />
+              Music Library
+            </h3>
+            <button
+              onClick={loadTracksFromDatabase}
+              disabled={loading}
+              className="px-3 py-1 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white rounded-lg transition-colors flex items-center gap-2"
+            >
+              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+              Refresh
+            </button>
+          </div>
 
           {loading ? (
             <div className="min-h-[200px] flex flex-col items-center justify-center text-center">
               <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
               <p className="text-white/80">Loading tracks...</p>
             </div>
-          ) : error ? (
+          ) : error && playlist.length === 0 ? (
             <div className="min-h-[200px] flex flex-col items-center justify-center text-center">
               <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
                 <X size={32} className="text-red-400" />
               </div>
-              <p className="text-red-400 text-lg mb-2">Error loading tracks</p>
-              <p className="text-white/60 text-sm mb-4">{error}</p>
+              <p className="text-red-400 text-lg mb-2">No tracks found</p>
+              <p className="text-white/60 text-sm mb-4">
+                Make sure you have audio files in your Supabase storage bucket
+              </p>
               <button
                 onClick={loadTracksFromDatabase}
                 className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
