@@ -1,15 +1,16 @@
 'use client'
 import React, { useState, useRef, useEffect, JSX, useCallback } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Plus, Music, X } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X } from 'lucide-react';
+import { supabase } from '../supabase/supabaseClient';
 
 interface Track {
   id: number;
   name: string;
   url: string;
-  file: File;
+  artist?: string;
+  duration?: number;
+  file_path?: string;
 }
-
-//interface for WebKit audio context
 interface WebkitWindow extends Window {
   webkitAudioContext?: typeof AudioContext;
 }
@@ -23,8 +24,10 @@ export default function MusicPlayer(): JSX.Element {
   const [volume, setVolume] = useState<number>(1);
   const [audioData, setAudioData] = useState<number>(0.5);
   const [frequencyData, setFrequencyData] = useState<number[]>(new Array(64).fill(0));
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
@@ -157,19 +160,59 @@ export default function MusicPlayer(): JSX.Element {
     }
   }, [volume]);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const files = e.target.files;
-    if (!files) return;
-    
-    const filesArray = Array.from(files);
-    const newTracks: Track[] = filesArray.map((file, index) => ({
-      id: playlist.length + index,
-      name: file.name.replace(/\.[^/.]+$/, ""),
-      url: URL.createObjectURL(file),
-      file: file
-    }));
-    setPlaylist([...playlist, ...newTracks]);
+  // Fixed function to load tracks from Supabase
+  const loadTracksFromDatabase = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const { data, error } = await supabase.storage.from('music').list('', {
+        limit: 100,
+        offset: 0,
+      });
+
+      if (error) {
+        console.error("Error fetching tracks:", error.message);
+        setError("Failed to load tracks from database");
+        return;
+      }
+
+      if (data) {
+        // Filter out non-audio files and build playlist
+        const audioFiles = data.filter(file => {
+          const ext = file.name.toLowerCase().split('.').pop();
+          return ext && ['mp3', 'wav', 'ogg', 'm4a', 'flac'].includes(ext);
+        });
+
+        const tracks: Track[] = audioFiles.map((file, index) => {
+          const { data: urlData } = supabase.storage
+            .from("songlist1")
+            .getPublicUrl(file.name);
+
+          return {
+            id: index,
+            name: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+            url: urlData?.publicUrl || "", // Säkrare fallback
+            artist: "Unknown Artist",
+            file_path: file.name,
+            duration: undefined,
+          };
+        });
+
+        setPlaylist(tracks);
+        console.log(`Loaded ${tracks.length} tracks from database`);
+      }
+    } catch (err) {
+      console.error("Unexpected error loading tracks:", err);
+      setError("Unexpected error occurred while loading tracks");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    loadTracksFromDatabase();
+  }, []);
 
   const togglePlay = (): void => {
     if (playlist.length === 0) return;
@@ -194,6 +237,14 @@ export default function MusicPlayer(): JSX.Element {
         audio.play().catch(console.error);
       }
     }, 100);
+  };
+
+  // Fixed handlePlayTrack function
+  const handlePlayTrack = (track: Track): void => {
+    const index = playlist.findIndex(t => t.id === track.id);
+    if (index !== -1) {
+      playTrack(index);
+    }
   };
 
   const previousTrack = (): void => {
@@ -265,73 +316,83 @@ export default function MusicPlayer(): JSX.Element {
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-neutral-800 to-zinc-700 p-4 relative overflow-hidden">
       {/* main background blob */}
-      <div 
+      <div
         className="fixed top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
         style={{
           transform: `translate(-50%, -50%) scale(${blobScale})`,
           opacity: blobOpacity,
-          transition: 'transform 0.05s ease-out, opacity 0.2s ease-out'
+          transition: "transform 0.05s ease-out, opacity 0.2s ease-out",
         }}
       >
         <div className="w-full h-full bg-gradient-to-br from-blue-700/60 via-indigo-800/60 to-cyan-600/60 rounded-full blur-3xl animate-pulse" />
       </div>
-      
+
       {/* 2nd blob top right */}
-      <div 
+      <div
         className="fixed top-1/4 right-1/6 w-80 h-80 pointer-events-none z-0"
         style={{
-          transform: `scale(${0.5 + (audioData * 0.8)})`,
+          transform: `scale(${0.5 + audioData * 0.8})`,
           opacity: blobOpacity * 0.5,
-          transition: 'transform 0.1s ease-out, opacity 0.2s ease-out'
+          transition: "transform 0.1s ease-out, opacity 0.2s ease-out",
         }}
       >
-        <div className="w-full h-full bg-gradient-to-tl from-cyan-400/50 via-blue-500/50 to-purple-600/50 rounded-full blur-2xl animate-pulse" 
-             style={{ animationDelay: '0.5s' }} />
+        <div
+          className="w-full h-full bg-gradient-to-tl from-cyan-400/50 via-blue-500/50 to-purple-600/50 rounded-full blur-2xl animate-pulse"
+          style={{ animationDelay: "0.5s" }}
+        />
       </div>
 
       {/* 3rd blob bottom left */}
-      <div 
+      <div
         className="fixed bottom-1/6 left-1/4 w-64 h-64 pointer-events-none z-0"
         style={{
-          transform: `scale(${0.5 + (audioData * 0.7)})`,
+          transform: `scale(${0.5 + audioData * 0.7})`,
           opacity: blobOpacity * 0.7,
-          transition: 'transform 0.15s ease-out, opacity 0.2s ease-out'
+          transition: "transform 0.15s ease-out, opacity 0.2s ease-out",
         }}
       >
-        <div className="w-full h-full bg-gradient-to-tr from-sky-500/35 via-blue-700/35 to-indigo-800/35 rounded-full blur-xl animate-pulse" 
-             style={{ animationDelay: '1s' }} />
+        <div
+          className="w-full h-full bg-gradient-to-tr from-sky-500/35 via-blue-700/35 to-indigo-800/35 rounded-full blur-xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
       </div>
 
       {/* 4th blob top left */}
-      <div 
+      <div
         className="fixed top-1/3 left-1/6 w-48 h-48 pointer-events-none z-0"
         style={{
-          transform: `scale(${0.4 + (audioData * 0.6)})`,
+          transform: `scale(${0.4 + audioData * 0.6})`,
           opacity: blobOpacity * 0.6,
-          transition: 'transform 0.2s ease-out, opacity 0.2s ease-out'
+          transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
         }}
       >
-        <div className="w-full h-full bg-gradient-to-br from-blue-700/60 via-indigo-800/60 to-cyan-600/60 rounded-full blur-xl animate-pulse" 
-             style={{ animationDelay: '1.5s' }} />
+        <div
+          className="w-full h-full bg-gradient-to-br from-blue-700/60 via-indigo-800/60 to-cyan-600/60 rounded-full blur-xl animate-pulse"
+          style={{ animationDelay: "1.5s" }}
+        />
       </div>
 
       {/* 5th blob bottom right */}
-      <div 
+      <div
         className="fixed bottom-1/3 right-1/6 w-56 h-56 pointer-events-none z-0"
         style={{
-          transform: `scale(${0.5 + (audioData * 0.9)})`,
+          transform: `scale(${0.5 + audioData * 0.9})`,
           opacity: blobOpacity * 0.5,
-          transition: 'transform 0.12s ease-out, opacity 0.2s ease-out' 
+          transition: "transform 0.12s ease-out, opacity 0.2s ease-out",
         }}
       >
-        <div className="w-full h-full bg-gradient-to-bl from-sky-500/35 via-blue-700/35 to-indigo-800/35 rounded-full blur-2xl animate-pulse" 
-             style={{ animationDelay: '2s' }} />
+        <div
+          className="w-full h-full bg-gradient-to-bl from-sky-500/35 via-blue-700/35 to-indigo-800/35 rounded-full blur-2xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        />
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2" >Portfolio Player</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Portfolio Player
+          </h1>
         </div>
 
         {/* Main player card */}
@@ -341,41 +402,41 @@ export default function MusicPlayer(): JSX.Element {
             <div className="relative h-28 w-4/5 mx-auto bg-black/20 rounded-2xl p-4 overflow-hidden">
               {/* Visualizer background glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-2xl blur-xl" />
-              
+
               {/* Frequency bars */}
               <div className="relative flex items-end justify-center gap-2 h-full">
                 {frequencyData.map((value, index) => {
                   const height = Math.max(4, value * 100);
                   const hue = (index / frequencyData.length) * 360; // Rainbow effect
-                  
+
                   return (
                     <div
                       key={index}
                       className="bg-gradient-to-t from-current to-transparent rounded-t-sm transition-all duration-75 ease-out"
                       style={{
                         height: `${height}%`,
-                        width: '4px',
+                        width: "4px",
                         color: `hsl(${hue}, 70%, 60%)`,
-                        opacity: 0.8 + (value * 0.2),
-                        filter: `brightness(${1 + (value * 0.5)})`,
-                        boxShadow: `0 0 ${value * 10}px hsl(${hue}, 70%, 60%)`
+                        opacity: 0.8 + value * 0.2,
+                        filter: `brightness(${1 + value * 0.5})`,
+                        boxShadow: `0 0 ${value * 10}px hsl(${hue}, 70%, 60%)`,
                       }}
                     />
                   );
                 })}
               </div>
-              
+
               {/* Reflection on eq visualizer */}
               <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/30 to-transparent rounded-b-2xl" />
-              
+
               {/* Center frequency indicator */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div 
+                <div
                   className="w-4 h-4 rounded-full bg-white/30 blur-sm"
                   style={{
-                    transform: `scale(${1 + (audioData * 2)})`,
+                    transform: `scale(${1 + audioData * 2})`,
                     opacity: audioData,
-                    transition: 'transform 0.1s ease-out'
+                    transition: "transform 0.1s ease-out",
                   }}
                 />
               </div>
@@ -385,11 +446,11 @@ export default function MusicPlayer(): JSX.Element {
           <div className="text-center mb-8">
             <div className="relative w-32 h-32 mx-auto mb-4">
               {/* ring around album */}
-              <div 
+              <div
                 className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-purple-600/70 rounded-2xl blur-sm"
                 style={{
-                  transform: `scale(${0.9 + (audioData * 0.2)})`,
-                  transition: 'transform 0.05s ease-out'
+                  transform: `scale(${0.9 + audioData * 0.2})`,
+                  transition: "transform 0.05s ease-out",
                 }}
               />
               <div className="relative w-full h-full bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
@@ -397,23 +458,27 @@ export default function MusicPlayer(): JSX.Element {
               </div>
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">
-              {currentTrackData ? currentTrackData.name : 'No track selected'}
+              {currentTrackData ? currentTrackData.name : "No track selected"}
             </h2>
             <p className="text-blue-200">
-              {playlist.length > 0 ? `Track ${currentTrack + 1} of ${playlist.length}` : 'Add music to get started'}
+              {playlist.length > 0
+                ? `Track ${currentTrack + 1} of ${playlist.length}`
+                : "Add music to get started"}
             </p>
           </div>
 
           {/* Progress Bar */}
           {playlist.length > 0 && (
             <div className="mb-6">
-              <div 
+              <div
                 className="w-full h-2 bg-white/20 rounded-full cursor-pointer mb-2"
                 onClick={handleSeek}
               >
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-cyan-400 to-sky-500 rounded-full transition-all duration-300"
-                  style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+                  style={{
+                    width: `${duration ? (currentTime / duration) * 100 : 0}%`,
+                  }}
                 />
               </div>
               <div className="flex justify-between text-sm text-blue-200">
@@ -432,22 +497,30 @@ export default function MusicPlayer(): JSX.Element {
             >
               <SkipBack size={24} className="text-white" />
             </button>
-            
+
             <button
               onClick={togglePlay}
               disabled={playlist.length === 0}
               className="p-4 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
               style={{
-                transform: isPlaying ? `scale(${1 + (audioData * 0.15)})` : 'scale(1)',
-                transition: 'transform 0.05s ease-out'
+                transform: isPlaying
+                  ? `scale(${1 + audioData * 0.15})`
+                  : "scale(1)",
+                transition: "transform 0.05s ease-out",
               }}
             >
-              {isPlaying ? <Pause size={32} className="text-white" /> : <Play size={32} className="text-white" />}
+              {isPlaying ? (
+                <Pause size={32} className="text-white" />
+              ) : (
+                <Play size={32} className="text-white" />
+              )}
             </button>
-            
+
             <button
               onClick={nextTrack}
-              disabled={currentTrack >= playlist.length - 1 || playlist.length === 0}
+              disabled={
+                currentTrack >= playlist.length - 1 || playlist.length === 0
+              }
               className="p-3 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               <SkipForward size={24} className="text-white" />
@@ -463,30 +536,81 @@ export default function MusicPlayer(): JSX.Element {
               max="1"
               step="0.1"
               value={volume}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVolume(parseFloat(e.target.value))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setVolume(parseFloat(e.target.value))
+              }
               className="w-32 accent-sky-700"
             />
-            <span className="text-white text-sm w-8">{Math.round(volume * 100)}%</span>
+            <span className="text-white text-sm w-8">
+              {Math.round(volume * 100)}%
+            </span>
           </div>
         </div>
 
-        {/* Add Music Button */}
-        <div className="text-center mb-6">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            accept="audio/*"
-            multiple
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white rounded-full font-semibold transition-all duration-200 shadow-lg"
-          >
-            <Plus size={20} />
-            Add Music
-          </button>
+        {/* Music Library from Database */}
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-6">
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Music size={24} />
+            Music Library
+          </h3>
+
+          {loading ? (
+            <div className="min-h-[200px] flex flex-col items-center justify-center text-center">
+              <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-white/80">Loading tracks...</p>
+            </div>
+          ) : error ? (
+            <div className="min-h-[200px] flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
+                <X size={32} className="text-red-400" />
+              </div>
+              <p className="text-red-400 text-lg mb-2">Error loading tracks</p>
+              <p className="text-white/60 text-sm mb-4">{error}</p>
+              <button
+                onClick={loadTracksFromDatabase}
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          ) : playlist.length === 0 ? (
+            <div className="min-h-[200px] flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-400/20 to-purple-500/20 rounded-full flex items-center justify-center mb-4">
+                <Music size={32} className="text-white/60" />
+              </div>
+              <p className="text-white/80 text-lg mb-2">No tracks found</p>
+              <p className="text-white/60 text-sm">
+                Upload audio files to your music storage in Supabase
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {playlist.map((track) => (
+                <div
+                  key={track.id}
+                  className="flex items-center justify-between bg-white/5 p-3 rounded-lg hover:bg-white/10 transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center">
+                      <Music size={16} className="text-white" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-white">{track.name}</span>
+                      <span className="text-white/60 text-sm">
+                        {track.artist}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handlePlayTrack(track)}
+                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+                  >
+                    Play
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Playlist */}
@@ -498,9 +622,9 @@ export default function MusicPlayer(): JSX.Element {
                 <div
                   key={track.id}
                   className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                    index === currentTrack 
-                      ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/50' 
-                      : 'bg-white/5 hover:bg-white/10'
+                    index === currentTrack
+                      ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/50"
+                      : "bg-white/5 hover:bg-white/10"
                   }`}
                   onClick={() => playTrack(index)}
                 >
@@ -510,7 +634,9 @@ export default function MusicPlayer(): JSX.Element {
                     </div>
                     <div>
                       <p className="text-white font-medium">{track.name}</p>
-                      <p className="text-blue-200 text-sm">Audio File</p>
+                      <p className="text-blue-200 text-sm">
+                        {track.artist || "Unknown Artist"}
+                      </p>
                     </div>
                   </div>
                   <button
