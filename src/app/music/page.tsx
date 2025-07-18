@@ -217,7 +217,7 @@ export default function MusicPlayer(): JSX.Element {
     
     setCurrentTrack(index);
     setIsPlaying(true);
-    setError(null); // Clear any previous errors
+    setError(null); 
     
     setTimeout(() => {
       const audio = audioRef.current;
@@ -276,6 +276,26 @@ export default function MusicPlayer(): JSX.Element {
   // blob animation styles
   const blobScale = 0.8 + (audioData * 1.2);
   const blobOpacity = 0.6 + (audioData * 0.4);
+
+  // Generate frequency bar styles
+  const getFrequencyBarStyle = (value: number, index: number) => {
+    const height = Math.max(4, value * 100);
+    const hue = (index / frequencyData.length) * 360;
+    const opacity = 0.8 + value * 0.2;
+    const brightness = 1 + value * 0.5;
+    const shadowSize = value * 10;
+    
+    return {
+      height: `${height}%`,
+      width: '4px',
+      background: `linear-gradient(to top, hsl(${hue}, 70%, 60%), transparent)`,
+      opacity: opacity,
+      filter: `brightness(${brightness})`,
+      boxShadow: `0 0 ${shadowSize}px hsl(${hue}, 70%, 60%)`,
+      borderRadius: '2px 2px 0 0',
+      transition: 'all 0.075s ease-out'
+    };
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-neutral-800 to-zinc-700 p-4 relative overflow-hidden">
@@ -350,25 +370,12 @@ export default function MusicPlayer(): JSX.Element {
 
               {/* Frequency bars */}
               <div className="relative flex items-end justify-center gap-2 h-full">
-                {frequencyData.map((value, index) => {
-                  const height = Math.max(4, value * 100);
-                  const hue = (index / frequencyData.length) * 360; // Rainbow effect
-
-                  return (
-                    <div
-                      key={index}
-                      className="bg-gradient-to-t from-current to-transparent rounded-t-sm transition-all duration-75 ease-out"
-                      style={{
-                        height: `${height}%`,
-                        width: "4px",
-                        color: `hsl(${hue}, 70%, 60%)`,
-                        opacity: 0.8 + value * 0.2,
-                        filter: `brightness(${1 + value * 0.5})`,
-                        boxShadow: `0 0 ${value * 10}px hsl(${hue}, 70%, 60%)`,
-                      }}
-                    />
-                  );
-                })}
+                {frequencyData.map((value, index) => (
+                  <div
+                    key={index}
+                    style={getFrequencyBarStyle(value, index)}
+                  />
+                ))}
               </div>
 
               {/* Reflection on eq visualizer */}
