@@ -11,30 +11,45 @@ interface Track {
 
 export async function getSongs(): Promise<Track[]> {
   try {
-    // First, try to get songs from database table
+    
     const { data: dbSongs, error: dbError } = await supabase
       .from('songs')
       .select('*');
 
     if (!dbError && dbSongs && dbSongs.length > 0) {
-      // If we have songs in database, use those
-      return dbSongs.map((song, index) => ({
-        id: song.id || index,
-        name: song.name || song.title || 'Unknown Song',
-        url: song.url || song.file_path || '',
-        artist: song.artist || 'Unknown Artist',
-        duration: song.duration,
-        file_path: song.file_path || song.url
-      }));
+      const tracks: Track[] = [];
+
+      for (const song of dbSongs) {
+        // Get public URL from storage using the filename
+        const { data: urlData } = supabase.storage
+          .from("songlist1")
+          .getPublicUrl(song.filename);
+
+        tracks.push({
+          id: song.id,
+          name: song.title || "Unknown Song",
+          url: urlData.publicUrl,
+          artist: "Unknown Artist", 
+          duration: undefined, 
+          file_path: song.filename,
+        });
+      }
+
+      console.log(`Loaded ${tracks.length} tracks from database`);
+      return tracks;
     }
 
-    // If no songs in db, try to get from storage
+    // If no songs in db, try to get from storage directly
     const { data: storageFiles, error: storageError } = await supabase.storage
-      .from('songlist1') //bucket name
-      .list('', {
-        limit: 100,
-        offset: 0,
-      });
+      .from("songlist1")
+      .list("", { limit: 100, offset: 0 });
+
+    console.log("storageFiles:", storageFiles);
+    console.log("storageError:", storageError);
+
+    const { data, error } = await supabase.storage.from('songlist1').list('');
+console.log('data:', data);
+console.log('error:', error);
 
     if (storageError) {
       console.error('Error fetching from storage:', storageError);
@@ -54,7 +69,6 @@ export async function getSongs(): Promise<Track[]> {
     });
 
     const tracks: Track[] = audioFiles.map((file, index) => {
-      // Get public URL for the file
       const { data: urlData } = supabase.storage
         .from('songlist1') //bucket name
         .getPublicUrl(file.name);
@@ -83,7 +97,7 @@ export async function getSongs(): Promise<Track[]> {
   }
 }
 
-/* // Alternative function to get songs from a specific storage bucket
+// Alternative function
 export async function getSongsFromBucket(bucketName: string): Promise<Track[]> {
   try {
     const { data: storageFiles, error: storageError } = await supabase.storage
@@ -134,4 +148,4 @@ export async function getSongsFromBucket(bucketName: string): Promise<Track[]> {
     console.error(`Error getting songs from ${bucketName}:`, error);
     return [];
   }
-} */
+}
