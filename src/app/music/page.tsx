@@ -250,19 +250,6 @@ export default function MusicPlayer(): JSX.Element {
     }
   };
 
-  const removeTrack = (index: number): void => {
-    const newPlaylist = playlist.filter((_, i) => i !== index);
-    setPlaylist(newPlaylist);
-    if (index === currentTrack && newPlaylist.length > 0) {
-      setCurrentTrack(Math.min(currentTrack, newPlaylist.length - 1));
-    } else if (index < currentTrack) {
-      setCurrentTrack(currentTrack - 1);
-    }
-    if (newPlaylist.length === 0) {
-      setIsPlaying(false);
-    }
-  };
-
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>): void => {
     const audio = audioRef.current;
     if (!audio || !duration) return;
@@ -513,47 +500,6 @@ export default function MusicPlayer(): JSX.Element {
           onRefresh={loadTracksFromDatabase}
           onPlayTrack={handlePlayTrack}
         />
-
-        {/* Playlist */}
-        {playlist.length > 0 && (
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-            <h3 className="text-xl font-bold text-white mb-4">Playlist</h3>
-            <div className="space-y-2">
-              {playlist.map((track, index) => (
-                <div
-                  key={track.id}
-                  className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                    index === currentTrack
-                      ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/50"
-                      : "bg-white/5 hover:bg-white/10"
-                  }`}
-                  onClick={() => playTrack(index)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center">
-                      <Music size={16} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-white font-medium">{track.name}</p>
-                      <p className="text-blue-200 text-sm">
-                        {track.artist || "Unknown Artist"}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      e.stopPropagation();
-                      removeTrack(index);
-                    }}
-                    className="p-2 rounded-full hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Audio Element */}
         {currentTrackData && (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, RefreshCw, X } from 'lucide-react';
+import { Music, RefreshCw, X, Info } from 'lucide-react';
 
 interface Track {
   id: number;
@@ -8,6 +8,7 @@ interface Track {
   artist?: string;
   duration?: number;
   file_path?: string;
+  description?: string;
 }
 
 interface MusicLibraryProps {
@@ -45,7 +46,7 @@ export default function MusicLibrary({
       {loading ? (
         <div className="min-h-[200px] flex flex-col items-center justify-center text-center">
           <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-white/80">Loading tracks...</p>
+          <p className="text-white/80">Loading tracks from database...</p>
         </div>
       ) : error && playlist.length === 0 ? (
         <div className="min-h-[200px] flex flex-col items-center justify-center text-center">
@@ -54,7 +55,7 @@ export default function MusicLibrary({
           </div>
           <p className="text-red-400 text-lg mb-2">No tracks found</p>
           <p className="text-white/60 text-sm mb-4">
-            Make sure you have audio files in your Supabase storage bucket
+            Make sure you have songs in your database or audio files in your Supabase storage bucket songlist1
           </p>
           <button
             onClick={onRefresh}
@@ -70,30 +71,41 @@ export default function MusicLibrary({
           </div>
           <p className="text-white/80 text-lg mb-2">No tracks found</p>
           <p className="text-white/60 text-sm">
-            Upload audio files to your music storage in Supabase
+            Upload audio files to your songlist1 bucket or add entries to your songs database
           </p>
         </div>
       ) : (
         <div className="space-y-2">
+          <div className="text-white/70 text-sm mb-4">
+            Found {playlist.length} track{playlist.length !== 1 ? 's' : ''}
+          </div>
           {playlist.map((track) => (
             <div
               key={track.id}
-              className="flex items-center justify-between bg-white/5 p-3 rounded-lg hover:bg-white/10 transition"
+              className="flex items-center justify-between bg-white/5 p-3 rounded-lg hover:bg-white/10 transition group"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center">
+              <div className="flex items-center gap-3 flex-1">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Music size={16} className="text-white" />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-white">{track.name}</span>
-                  <span className="text-white/60 text-sm">
+                <div className="flex flex-col min-w-0 flex-1">
+                  <span className="text-white truncate">{track.name}</span>
+                  <span className="text-white/60 text-sm truncate">
                     {track.artist}
                   </span>
+                  {track.description && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <Info size={12} className="text-white/50" />
+                      <span className="text-white/50 text-xs truncate">
+                        {track.description}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               <button
                 onClick={() => onPlayTrack(track)}
-                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors opacity-70 group-hover:opacity-100"
               >
                 Play
               </button>
