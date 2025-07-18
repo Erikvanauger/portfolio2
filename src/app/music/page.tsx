@@ -341,10 +341,10 @@ export default function MusicPlayer(): JSX.Element {
         )}
 
         {/* Main player card */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-6 border border-white/20">
+        <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 mb-6 border border-white/20">
           {/* Music Visualizer */}
           <div className="mb-8">
-            <div className="relative h-28 w-4/5 mx-auto bg-black/20 rounded-2xl p-4 overflow-hidden">
+            <div className="relative h-28 w-4/5 mx-auto bg-black/20 rounded-xl p-4 overflow-hidden">
               {/* Visualizer background glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-2xl blur-xl" />
 
