@@ -334,36 +334,6 @@ export default function MusicPlayer(): JSX.Element {
         />
       </div>
 
-      {/* 4th blob top left */}
-      <div
-        className="fixed top-1/3 left-1/6 w-48 h-48 pointer-events-none z-0"
-        style={{
-          transform: `scale(${0.4 + audioData * 0.6})`,
-          opacity: blobOpacity * 0.6,
-          transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
-        }}
-      >
-        <div
-          className="w-full h-full bg-gradient-to-br from-blue-700/60 via-indigo-800/60 to-cyan-600/60 rounded-full blur-xl animate-pulse"
-          style={{ animationDelay: "1.5s" }}
-        />
-      </div>
-
-      {/* 5th blob bottom right */}
-      <div
-        className="fixed bottom-1/3 right-1/6 w-56 h-56 pointer-events-none z-0"
-        style={{
-          transform: `scale(${0.5 + audioData * 0.9})`,
-          opacity: blobOpacity * 0.5,
-          transition: "transform 0.12s ease-out, opacity 0.2s ease-out",
-        }}
-      >
-        <div
-          className="w-full h-full bg-gradient-to-bl from-sky-500/35 via-blue-700/35 to-indigo-800/35 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: "2s" }}
-        />
-      </div>
-
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
