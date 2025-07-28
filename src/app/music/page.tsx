@@ -279,7 +279,7 @@ export default function MusicPlayer(): JSX.Element {
   const blobScale = 0.8 + (audioData * 1.2);
   const blobOpacity = 0.6 + (audioData * 0.4);
 
-  // Generate frequency bar styles
+  // frequency bar styles
   const getFrequencyBarStyle = (value: number, index: number) => {
     const height = Math.max(4, value * 100);
     const hue = (index / frequencyData.length) * 360;
@@ -311,7 +311,7 @@ export default function MusicPlayer(): JSX.Element {
               size={18}
               className="group-hover:-translate-x-1 transition-transform duration-300"
             />
-            <span className="font-medium">Back to Home</span>
+            <span className="font-medium">Back</span>
           </button>
         </div>
       </nav>
@@ -361,7 +361,7 @@ export default function MusicPlayer(): JSX.Element {
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-5xl font-semibold text-white mb-2 font-nunito">
             Portfolio Player
           </h1>
         </div>
@@ -393,7 +393,7 @@ export default function MusicPlayer(): JSX.Element {
               </div>
 
               {/* Reflection on eq visualizer */}
-              <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/10 to-transparent rounded-b-2xl" />
+              <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/6 to-transparent rounded-b-2xl" />
 
               {/* Center frequency indicator */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -422,7 +422,7 @@ export default function MusicPlayer(): JSX.Element {
                 <Music size={48} className="text-white" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-2xl font-bold font-nunito text-white mb-2">
               {currentTrackData ? currentTrackData.name : "No track selected"}
             </h2>
             <p className="text-blue-200">
@@ -512,7 +512,6 @@ export default function MusicPlayer(): JSX.Element {
           </div>
         </div>
 
-        {/* Music Library Component */}
         <MusicLibrary
           playlist={playlist}
           loading={loading}
@@ -521,7 +520,6 @@ export default function MusicPlayer(): JSX.Element {
           onPlayTrack={handlePlayTrack}
         />
 
-        {/* Audio Element */}
         {currentTrackData && (
           <audio
             ref={audioRef}

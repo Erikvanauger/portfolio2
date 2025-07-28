@@ -33,10 +33,10 @@ export async function getSongs(): Promise<Track[]> {
 
           tracks.push({
             id: song.id,
-            name: song.title || "Unknown Song",
+            name: song.title || "Unknown Song", // Use title first, fallback to filename
             url: urlData.publicUrl,
-            artist: "Unknown Artist",
-            duration: undefined, 
+            artist: song.artist || "Unknown Artist", // Use artist from database if available
+            duration: song.duration || undefined, 
             file_path: song.filename,
             description: song.description,
           });
@@ -86,6 +86,7 @@ async function getSongsFromStorage(): Promise<Track[]> {
         .from('songlist1')
         .getPublicUrl(file.name);
 
+      // When loading from storage only (no database), format filename for display
       const displayName = file.name
         .replace(/\.[^/.]+$/, '')
         .replace(/[-_]/g, ' ')
@@ -93,7 +94,7 @@ async function getSongsFromStorage(): Promise<Track[]> {
 
       return {
         id: index + 1000, 
-        name: displayName,
+        name: displayName, 
         url: urlData.publicUrl,
         artist: 'Unknown Artist',
         file_path: file.name,
@@ -139,6 +140,7 @@ export async function getSongsFromBucket(bucketName: string): Promise<Track[]> {
         .from(bucketName)
         .getPublicUrl(file.name);
 
+      // When loading from bucket only, format filename for display
       const displayName = file.name
         .replace(/\.[^/.]+$/, '')
         .replace(/[-_]/g, ' ')
@@ -146,7 +148,7 @@ export async function getSongsFromBucket(bucketName: string): Promise<Track[]> {
 
       return {
         id: index,
-        name: displayName,
+        name: displayName, // This will be the formatted filename since no database title is available
         url: urlData.publicUrl,
         artist: 'Unknown Artist',
         file_path: file.name,

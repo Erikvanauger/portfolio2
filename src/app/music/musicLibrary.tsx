@@ -29,7 +29,7 @@ export default function MusicLibrary({
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+        <h3 className="text-xl font-bold font-nunito text-white flex items-center gap-2">
           <Music size={24} />
           Music Library
         </h3>
@@ -86,9 +86,9 @@ export default function MusicLibrary({
             >
               <div className="flex items-center gap-3 flex-1">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Music size={16} className="text-white" />
+                  <Music size={16} className="text-white " />
                 </div>
-                <div className="flex flex-col min-w-0 flex-1">
+                <div className="flex flex-col min-w-0 flex-1 font-nunito">
                   <span className="text-white truncate">{track.name}</span>
                   <span className="text-white/60 text-sm truncate">
                     {track.artist}
