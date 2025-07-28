@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useRef, useEffect, JSX, useCallback } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { getSongs } from './getSongs';
 import MusicLibrary from './musicLibrary';
 
@@ -18,6 +19,7 @@ interface WebkitWindow extends Window {
 }
 
 export default function MusicPlayer(): JSX.Element {
+  const router = useRouter();
   const [playlist, setPlaylist] = useState<Track[]>([]);
   const [currentTrack, setCurrentTrack] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -299,7 +301,22 @@ export default function MusicPlayer(): JSX.Element {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-neutral-800 to-zinc-700 p-4 relative overflow-hidden">
-      {/* main background blob */}
+      <nav className="relative z-50 mb-6">
+        <div className="max-w-4xl mx-auto">
+          <button
+            onClick={() => router.push('/')}
+            className="group flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full border border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
+          >
+            <ArrowLeft
+              size={18}
+              className="group-hover:-translate-x-1 transition-transform duration-300"
+            />
+            <span className="font-medium">Back to Home</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* main blob */}
       <div
         className="fixed top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
         style={{
@@ -311,7 +328,7 @@ export default function MusicPlayer(): JSX.Element {
         <div className="w-full h-full bg-gradient-to-br from-blue-700/60 via-indigo-800/60 to-cyan-600/60 rounded-full blur-3xl animate-pulse" />
       </div>
 
-      {/* 2nd blob top right */}
+      {/* 2nd blob */}
       <div
         className="fixed top-1/4 right-1/6 w-80 h-80 pointer-events-none z-0"
         style={{
@@ -326,7 +343,7 @@ export default function MusicPlayer(): JSX.Element {
         />
       </div>
 
-      {/* 3rd blob bottom left */}
+      {/* 3rd blob */}
       <div
         className="fixed bottom-1/6 left-1/4 w-64 h-64 pointer-events-none z-0"
         style={{
@@ -360,14 +377,11 @@ export default function MusicPlayer(): JSX.Element {
           </div>
         )}
 
-        {/* Main player card */}
+        {/* Main card */}
         <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 mb-6 border border-white/20">
           {/* Music Visualizer */}
           <div className="mb-8">
-            <div className="relative h-28 w-4/5 mx-auto bg-black/20 rounded-xl p-4 overflow-hidden">
-              {/* Visualizer background glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-2xl blur-xl" />
-
+            <div className="relative h-28 w-4/5 mx-auto p-4 overflow-hidden">
               {/* Frequency bars */}
               <div className="relative flex items-end justify-center gap-2 h-full">
                 {frequencyData.map((value, index) => (
@@ -379,7 +393,7 @@ export default function MusicPlayer(): JSX.Element {
               </div>
 
               {/* Reflection on eq visualizer */}
-              <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/30 to-transparent rounded-b-2xl" />
+              <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/10 to-transparent rounded-b-2xl" />
 
               {/* Center frequency indicator */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -397,7 +411,6 @@ export default function MusicPlayer(): JSX.Element {
 
           <div className="text-center mb-8">
             <div className="relative w-32 h-32 mx-auto mb-4">
-              {/* ring around album */}
               <div
                 className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-purple-600/70 rounded-2xl blur-sm"
                 style={{
