@@ -17,6 +17,10 @@ export const en = {
         description: "A health application where users can log in, track their personal data, and receive calculated calorie and water intake based on different fitness goals. The app also offers tips on healthy meals to support users in their daily routines.",
     },
     project2: {
+      title: "Music player",
+        description: "Personal music player displaying unfinished music projects, ideas and remakes. The music player is directly implemented in this portfolio and the songs are stored in Supabase",
+    },
+    project3: {
       title: "Car Valuation Website",
         description: "A car valuation website we built from scratch during my internship at Novalo Technologies. The site currently uses dummy data, but will eventually fetch real data from biluppgifter.se",
     }

@@ -17,6 +17,10 @@ export const sv = {
         description: "En hälsoapplikation där användare kan logga in, registrera sina uppgifter och få uträknat kalori- och vätskeintag baserat på olika träningsmål. Appen erbjuder även tips på nyttiga måltider som stöd i vardagen.",
       },
       project2: {
+        title: "Musikspelare",
+        description: "En personlig musikspelare som inehåller ofärdiga musikprojekt och remakes. Musikspelaren är direkt implementerad i denna portfolio och låtarna hämtas från Supabase",
+      },
+      project3: {
         title: "Bilvärderingshemsida",
         description: "En bilvärderingssida vi byggde under min praktik på Novalo Technologies. Använder dummydata just nu, men ska hämta från biluppgifter.se.",
       },
