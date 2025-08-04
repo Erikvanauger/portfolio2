@@ -11,6 +11,7 @@ import {
   MapPin,
   Menu,
   X,
+  Lock,
 } from "lucide-react";
 import { useTranslation } from "../hooks/useTranslation";
 import { useRouter } from "next/navigation";
@@ -46,6 +47,7 @@ export default function Portfolio() {
       image: "/dashboard2.png",
       liveUrl: "https://forgebod.netlify.app/",
       githubUrl: "https://github.com/Erikvanauger/fitness-app",
+      available: true,
     },
     {
       id: 2,
@@ -55,6 +57,7 @@ export default function Portfolio() {
       image: "/Player.PNG",
       liveUrl: "https://auger-dev.netlify.app/music",
       githubUrl: "https://github.com/yourusername/project",
+      available: true,
     },
     {
       id: 3,
@@ -64,6 +67,7 @@ export default function Portfolio() {
       image: "/api/placeholder/400/250",
       liveUrl: "https://your-project.netlify.app",
       githubUrl: "https://github.com/yourusername/project",
+      available: false,
     },
   ];
 
@@ -268,12 +272,19 @@ export default function Portfolio() {
             >
               {/* Project Image */}
               <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 relative overflow-hidden">
+                {project.available ? (
                 <Image
                   src={project.image}
                   layout="fill"
                   alt={project.title}
                   objectFit="cover"
                 />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-600/40 to-gray-800/40">
+                    <Lock size={40} className="text-white/60 mb-3" />
+                    <span className="text-white/80 font-medium text-lg">Not Available</span>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="flex flex-wrap gap-2">

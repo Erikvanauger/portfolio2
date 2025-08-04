@@ -26,14 +26,14 @@ export default function PortfolioLanding() {
       >
         {/*Background image left*/}
         <div
-          className="absolute inset-0 bg-cover bg-center md:bg-center bg-top"
+          className="absolute inset-0 bg-cover md:bg-center bg-top"
           style={{ backgroundImage: 'url("/portfolio.png")' }}
         >
           <div className="absolute inset-0 bg-black/30 md:bg-black/20"></div>
         </div>
 
         {/*Content*/}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center text-white p-4 md:p-8">
+        <div className="relative z-10 min-h-screen flex flex-col justify-center items-center text-white p-4 md:p-8">
           <div
             className={`transform transition-all duration-500 text-center ${
               hoveredSide === "portfolio" ? "md:scale-110" : "scale-100"
@@ -76,7 +76,7 @@ export default function PortfolioLanding() {
 
       {/* Music Side */}
       <div
-        className={`relative flex-1 cursor-pointer transition-all duration-700 ease-out md:${
+        className={`relative flex-1 cursor-pointer  transition-all duration-700 ease-out md:${
           hoveredSide === "portfolio"
             ? "flex-[0.3]"
             : hoveredSide === "music"
@@ -98,7 +98,7 @@ export default function PortfolioLanding() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center text-white p-4 md:p-8">
+        <div className="relative z-10 min-h-screen flex flex-col justify-center items-center text-white p-4 md:p-8">
           <div
             className={`transform transition-all duration-500 text-center ${
               hoveredSide === "music" ? "md:scale-110" : "scale-100"
