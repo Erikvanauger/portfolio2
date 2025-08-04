@@ -289,7 +289,6 @@ export default function MusicPlayer(): JSX.Element {
     
     return {
       height: `${height}%`,
-      width: '4px',
       background: `linear-gradient(to top, hsl(${hue}, 70%, 60%), transparent)`,
       opacity: opacity,
       filter: `brightness(${brightness})`,
@@ -361,7 +360,7 @@ export default function MusicPlayer(): JSX.Element {
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-semibold text-white mb-2 font-nunito">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-2 font-nunito">
             Portfolio Player
           </h1>
         </div>
@@ -378,54 +377,52 @@ export default function MusicPlayer(): JSX.Element {
         )}
 
         {/* Main card */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 mb-6 border border-white/20">
+        <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 sm:p-6 mb-6 border border-white/20">
           {/* Music Visualizer */}
-          <div className="mb-8">
-            <div className="relative h-28 w-4/5 mx-auto p-4 overflow-hidden">
+          <div className="mb-6 sm:mb-8">
+            <div className="relative h-20 sm:h-24 lg:h-28 w-full mx-auto p-2 sm:p-4 overflow-hidden">
               {/* Frequency bars */}
-              <div className="relative flex items-end justify-center gap-2 h-full">
+              <div className="relative flex items-end justify-center h-full px-2">
                 {frequencyData.map((value, index) => (
                   <div
                     key={index}
+                    className="flex-1 max-w-[8px] sm:max-w-[6px] lg:max-w-[6px] mx-[1px] sm:mx-[2px]"
                     style={getFrequencyBarStyle(value, index)}
                   />
                 ))}
               </div>
 
-              {/* Reflection on eq visualizer */}
-              <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/6 to-transparent rounded-b-2xl" />
-
               {/* Center frequency indicator */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              {/* <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <div
-                  className="w-4 h-4 rounded-full bg-white/30 blur-sm"
+                  className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-white/30 blur-sm"
                   style={{
                     transform: `scale(${1 + audioData * 2})`,
                     opacity: audioData,
                     transition: "transform 0.1s ease-out",
                   }}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
 
-          <div className="text-center mb-8">
-            <div className="relative w-32 h-32 mx-auto mb-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 mx-auto mb-4">
               <div
-                className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-purple-600/70 rounded-2xl blur-sm"
+                className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-purple-600/70 rounded-2xl"
                 style={{
                   transform: `scale(${0.9 + audioData * 0.2})`,
                   transition: "transform 0.05s ease-out",
                 }}
               />
-              <div className="relative w-full h-full bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
-                <Music size={48} className="text-white" />
+              <div className="relative w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-2xl">
+                <Music size={36} className="text-white sm:w-10 sm:h-10 lg:w-12 lg:h-12" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold font-nunito text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold font-nunito text-white mb-2 px-4">
               {currentTrackData ? currentTrackData.name : "No track selected"}
             </h2>
-            <p className="text-blue-200">
+            <p className="text-blue-200 text-sm sm:text-base">
               {playlist.length > 0
                 ? `Track ${currentTrack + 1} of ${playlist.length}`
                 : "Add music to get started"}
@@ -446,7 +443,7 @@ export default function MusicPlayer(): JSX.Element {
                   }}
                 />
               </div>
-              <div className="flex justify-between text-sm text-blue-200">
+              <div className="flex justify-between text-xs sm:text-sm text-blue-200">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
@@ -454,19 +451,19 @@ export default function MusicPlayer(): JSX.Element {
           )}
 
           {/* Controls */}
-          <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6">
             <button
               onClick={previousTrack}
               disabled={currentTrack === 0 || playlist.length === 0}
-              className="p-3 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="p-2 sm:p-3 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
-              <SkipBack size={24} className="text-white" />
+              <SkipBack size={20} className="text-white sm:w-6 sm:h-6" />
             </button>
 
             <button
               onClick={togglePlay}
               disabled={playlist.length === 0}
-              className="p-4 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
+              className="p-3 sm:p-4 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
               style={{
                 transform: isPlaying
                   ? `scale(${1 + audioData * 0.15})`
@@ -475,9 +472,9 @@ export default function MusicPlayer(): JSX.Element {
               }}
             >
               {isPlaying ? (
-                <Pause size={32} className="text-white" />
+                <Pause size={28} className="text-white sm:w-8 sm:h-8" />
               ) : (
-                <Play size={32} className="text-white" />
+                <Play size={28} className="text-white sm:w-8 sm:h-8" />
               )}
             </button>
 
@@ -486,15 +483,15 @@ export default function MusicPlayer(): JSX.Element {
               disabled={
                 currentTrack >= playlist.length - 1 || playlist.length === 0
               }
-              className="p-3 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="p-2 sm:p-3 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
-              <SkipForward size={24} className="text-white" />
+              <SkipForward size={20} className="text-white sm:w-6 sm:h-6" />
             </button>
           </div>
 
           {/* Volume */}
-          <div className="flex items-center justify-center gap-3">
-            <Volume2 size={20} className="text-white" />
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <Volume2 size={18} className="text-white sm:w-5 sm:h-5" />
             <input
               type="range"
               min="0"
@@ -504,9 +501,9 @@ export default function MusicPlayer(): JSX.Element {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setVolume(parseFloat(e.target.value))
               }
-              className="w-32 accent-sky-700"
+              className="w-24 sm:w-32 accent-sky-700"
             />
-            <span className="text-white text-sm w-8">
+            <span className="text-white text-xs sm:text-sm w-6 sm:w-8">
               {Math.round(volume * 100)}%
             </span>
           </div>

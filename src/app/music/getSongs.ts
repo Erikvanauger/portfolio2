@@ -33,9 +33,9 @@ export async function getSongs(): Promise<Track[]> {
 
           tracks.push({
             id: song.id,
-            name: song.title || "Unknown Song", // Use title first, fallback to filename
+            name: song.title || "Unknown Song", 
             url: urlData.publicUrl,
-            artist: song.artist || "Unknown Artist", // Use artist from database if available
+            artist: song.artist || "Unknown Artist", 
             duration: song.duration || undefined, 
             file_path: song.filename,
             description: song.description,
