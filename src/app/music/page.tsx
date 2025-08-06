@@ -360,7 +360,7 @@ export default function MusicPlayer(): JSX.Element {
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-2 font-nunito">
+          <h1 className="text-3xlbg-gradient-to-r from-[#d4d4d4] via-[#a3a3a3] to-[#0f172a]  sm:text-4xl lg:text-5xl font-semibold text-white mb-2 font-nunito">
             Portfolio Player
           </h1>
         </div>

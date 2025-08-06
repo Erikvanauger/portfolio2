@@ -32,6 +32,7 @@ export default function Portfolio() {
     "AWS",
     "Git",
     "Tailwind CSS",
+    "NextJS"
   ];
   const languages = [
     { id: "en", name: "English" },
@@ -412,7 +413,7 @@ export default function Portfolio() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
             <a
-              href="mailto:your.email@example.com"
+              href="mailto:erik.workspace1@gmail.com"
               className="flex items-center space-x-3 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105"
             >
               <Mail size={20} />
@@ -420,7 +421,7 @@ export default function Portfolio() {
             </a>
 
             <a
-              href="https://github.com/yourusername"
+              href="https://github.com/Erikvanauger"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-3 bg-white/10 hover:bg-white/20 hover:scale-105 border border-white/20 text-white px-8 py-4 rounded-full transition-all duration-300"
@@ -435,7 +436,7 @@ export default function Portfolio() {
       <footer className="py-8 px-6 border-t border-white/10">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-white/60">
-            © 2025 Erik Åhlberg. Built with React and Tailwind CSS.
+            © 2025 Erik Åhlberg. Built with React and NextJS.
           </p>
         </div>
       </footer>
