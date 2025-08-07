@@ -51,8 +51,8 @@ export default function MusicPlayer(): JSX.Element {
 
     setAudioData(isPlaying ? Math.max(0.4, normalizedData) : 0.2);
 
-    // Update frequency data for visualizer 
-    const frequencyBars = 64;
+    // Frequency data for visualizer 
+    const frequencyBars = 48;
     const dataArray = dataArrayRef.current;
     const newFrequencyData: number[] = [];
 
