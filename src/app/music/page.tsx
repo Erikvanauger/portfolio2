@@ -4,6 +4,7 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X, ArrowLeft } from
 import { useRouter } from 'next/navigation';
 import { getSongs } from './getSongs';
 import MusicLibrary from './musicLibrary';
+import BackgroundVideo from './backgroundVideo';
 
 interface Track {
   id: number;
@@ -300,6 +301,17 @@ export default function MusicPlayer(): JSX.Element {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-neutral-800 to-zinc-700 p-4 relative overflow-hidden">
+        <video
+          className="fixed blur-md top-0 left-0 min-w-full min-h-full w-auto h-auto z-0 object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+        >
+          <source src="/videos/ds.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/70"></div>
+
       <nav className="relative z-50 mb-6">
         <div className="max-w-4xl mx-auto">
           <button
@@ -314,6 +326,8 @@ export default function MusicPlayer(): JSX.Element {
           </button>
         </div>
       </nav>
+
+       
 
       {/* main blob */}
       <div
@@ -508,6 +522,8 @@ export default function MusicPlayer(): JSX.Element {
             </span>
           </div>
         </div>
+
+       
 
         <MusicLibrary
           playlist={playlist}

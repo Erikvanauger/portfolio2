@@ -28,11 +28,11 @@ export default function Portfolio() {
     "JavaScript",
     "React",
     "TypeScript",
-    "Vue.js",
     "AWS",
     "Git",
     "Tailwind CSS",
-    "NextJS"
+    "NextJS",
+    "C#"
   ];
   const languages = [
     { id: "en", name: "English" },
