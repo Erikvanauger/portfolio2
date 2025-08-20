@@ -4,7 +4,6 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X, ArrowLeft } from
 import { useRouter } from 'next/navigation';
 import { getSongs } from './getSongs';
 import MusicLibrary from './musicLibrary';
-import BackgroundVideo from './backgroundVideo';
 
 interface Track {
   id: number;
