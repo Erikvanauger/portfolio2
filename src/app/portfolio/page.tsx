@@ -64,12 +64,23 @@ export default function Portfolio() {
       id: 3,
       title: t.projects.project3.title,
       description: t.projects.project3.description,
+      technologies: [ "NextJS","React", "Typescript"],
+      image: "",
+      liveUrl: "",
+      githubUrl: "",
+      available: true,
+    },
+    {
+      id: 4,
+      title: t.projects.project4.title,
+      description: t.projects.project4.description,
       technologies: [ "AWS", "NextJS","React", "Typescript"],
       image: "/api/placeholder/400/250",
-      liveUrl: "https://your-project.netlify.app",
-      githubUrl: "https://github.com/yourusername/project",
+      liveUrl: "",
+      githubUrl: "",
       available: false,
     },
+
   ];
 
   const handleNavClick = (href: string) => {

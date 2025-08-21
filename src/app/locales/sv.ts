@@ -21,6 +21,10 @@ export const sv = {
         description: "En personlig musikspelare som inehåller ofärdiga musikprojekt och remakes. Musikspelaren är direkt implementerad i denna portfolio och låtarna hämtas från Supabase",
       },
       project3: {
+        title: "Spelbutik",
+        description: "En e-handelswebbplats där användare kan bläddra bland och köpa videospel och gamingtillbehör.",
+      },
+      project4: {
         title: "Bilvärderingshemsida",
         description: "En bilvärderingssida vi byggde under min praktik på Novalo Technologies. Använder dummydata just nu, men ska hämta från biluppgifter.se.",
       },

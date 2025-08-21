@@ -21,9 +21,14 @@ export const en = {
         description: "Personal music player displaying unfinished music projects, ideas and remakes. The music player is directly implemented in this portfolio and the songs are stored in Supabase",
     },
     project3: {
+      title: "Gaming Store",
+        description: "An e-commerce website where users can browse and purchase video games and gaming accessories.",
+    },
+    project4: {
       title: "Car Valuation Website",
         description: "A car valuation website we built from scratch during my internship at Novalo Technologies. The site currently uses dummy data, but will eventually fetch real data from biluppgifter.se",
-    }
+    },
+    
   },
 
   about: {
