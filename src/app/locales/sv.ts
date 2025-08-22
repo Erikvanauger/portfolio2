@@ -13,7 +13,7 @@ export const sv = {
     titlePart1: "Mina",
     titlePart2: "Projekt",
     project1: {
-        title: "Hälso-App",
+        title: "Hälso-App (WIP)",
         description: "En hälsoapplikation där användare kan logga in, registrera sina uppgifter och få uträknat kalori- och vätskeintag baserat på olika träningsmål. Appen erbjuder även tips på nyttiga måltider som stöd i vardagen.",
       },
       project2: {
@@ -21,7 +21,7 @@ export const sv = {
         description: "En personlig musikspelare som inehåller ofärdiga musikprojekt och remakes. Musikspelaren är direkt implementerad i denna portfolio och låtarna hämtas från Supabase",
       },
       project3: {
-        title: "Spelbutik",
+        title: "Spelbutik (WIP)",
         description: "En e-handelswebbplats där användare kan bläddra bland och köpa videospel och gamingtillbehör.",
       },
       project4: {

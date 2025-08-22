@@ -13,7 +13,7 @@ export const en = {
     titlePart1: "Featured",
     titlePart2: "Projects",
     project1: {
-      title: "Health App",
+      title: "Health App (WIP)",
         description: "A health application where users can log in, track their personal data, and receive calculated calorie and water intake based on different fitness goals. The app also offers tips on healthy meals to support users in their daily routines.",
     },
     project2: {
@@ -21,7 +21,7 @@ export const en = {
         description: "Personal music player displaying unfinished music projects, ideas and remakes. The music player is directly implemented in this portfolio and the songs are stored in Supabase",
     },
     project3: {
-      title: "Gaming Store",
+      title: "Gaming Store (WIP)",
         description: "An e-commerce website where users can browse and purchase video games and gaming accessories.",
     },
     project4: {

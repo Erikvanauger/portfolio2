@@ -65,9 +65,9 @@ export default function Portfolio() {
       title: t.projects.project3.title,
       description: t.projects.project3.description,
       technologies: [ "NextJS","React", "Typescript"],
-      image: "",
-      liveUrl: "",
-      githubUrl: "",
+      image: "/xlr8.PNG",
+      liveUrl: "https://xlreight.netlify.app/",
+      githubUrl: "https://github.com/Erikvanauger/ecommerce",
       available: true,
     },
     {
