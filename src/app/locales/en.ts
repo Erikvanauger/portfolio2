@@ -7,7 +7,7 @@ export const en = {
   },
   hero: {
     title: "My Portfolio",
-    subtitle: "Crafting digital experiences through code, creativity, and continuous learning",
+    subtitle: "Crafting digital experiences through code, creativity and continuous learning",
   },
   projects:{
     titlePart1: "Featured",
