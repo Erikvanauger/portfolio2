@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Music, ArrowRight, Headphones, BriefcaseBusiness} from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function PortfolioLanding() {
   const [hoveredSide, setHoveredSide] = useState<"portfolio"| "music" |null>(null);
@@ -21,14 +22,22 @@ export default function PortfolioLanding() {
         onMouseEnter={() => setHoveredSide("portfolio")}
         onMouseLeave={() => setHoveredSide(null)}
         onClick={() => {
-          router.push('/portfolio');          
+          router.push("/portfolio");
         }}
       >
         {/*Background image left*/}
         <div
           className="absolute inset-0 bg-cover md:bg-center bg-top"
-          style={{ backgroundImage: 'url("/portfolio.png")' }}
+          
         >
+          <Image
+            src="/portfolio.PNG"
+            alt="Hero-left"
+            fill
+            className='object-cover'
+            priority 
+          />
+
           <div className="absolute inset-0 bg-black/30 md:bg-black/20"></div>
         </div>
 
@@ -40,7 +49,10 @@ export default function PortfolioLanding() {
             }`}
           >
             <div className="bg-white/10 backdrop-blur-sm rounded-full p-4 md:p-6 mb-4 md:mb-6 mx-auto">
-              <BriefcaseBusiness size={32} className="text-white md:w-12 md:h-12" />
+              <BriefcaseBusiness
+                size={32}
+                className="text-white md:w-12 md:h-12"
+              />
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold mb-3 md:mb-4 text-center">
@@ -86,14 +98,20 @@ export default function PortfolioLanding() {
         onMouseEnter={() => setHoveredSide("music")}
         onMouseLeave={() => setHoveredSide(null)}
         onClick={() => {
-          router.push('/music'); 
+          router.push("/music");
         }}
       >
         {/* Background image right */}
         <div
-          className="absolute inset-0 bg-cover bg-center md:bg-center bg-top"
-          style={{ backgroundImage: 'url("/festival.png")' }}
+          className="absolute inset-0 bg-cover md:bg-center bg-top"
         >
+          <Image
+            src="/festival.PNG"
+            alt="Hero-right"
+            fill
+            className='object-cover'
+            priority 
+          />
           <div className="absolute inset-0 bg-black/30 md:bg-black/20"></div>
         </div>
 

@@ -30,7 +30,7 @@ export default function Portfolio() {
     "TypeScript",
     "AWS",
     "Git",
-    "Tailwind CSS",
+    "Tailwind",
     "NextJS",
     "C#"
   ];
