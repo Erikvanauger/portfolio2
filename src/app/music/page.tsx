@@ -31,6 +31,8 @@ export default function MusicPlayer(): JSX.Element {
   const updateAudioData = useCallback((): void => {
     if (!analyserRef.current || !dataArrayRef.current) return;
 
+    analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+
     // blob intensity
     const average =
       dataArrayRef.current.reduce((sum, value) => sum + value, 0) /
@@ -63,7 +65,7 @@ export default function MusicPlayer(): JSX.Element {
   const setupAudioContext = useCallback((): void => {
     const audio = audioRef.current;
     if (!audio || audioContextRef.current) return;
-
+    
     try {
       const audioContext = new (window.AudioContext || (window as unknown as WebkitWindow).webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
