@@ -4,16 +4,7 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, Music, X, ArrowLeft } from
 import { useRouter } from 'next/navigation';
 import { getSongs } from './getSongs';
 import MusicLibrary from './musicLibrary';
-
-interface Track {
-  id: number;
-  name: string;
-  url: string;
-  artist?: string;
-  duration?: number;
-  file_path?: string;
-}
-
+import { Track } from './interfaces/track';
 interface WebkitWindow extends Window {
   webkitAudioContext?: typeof AudioContext;
 }
@@ -30,7 +21,6 @@ export default function MusicPlayer(): JSX.Element {
   const [frequencyData, setFrequencyData] = useState<number[]>(new Array(64).fill(0));
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -41,9 +31,7 @@ export default function MusicPlayer(): JSX.Element {
   const updateAudioData = useCallback((): void => {
     if (!analyserRef.current || !dataArrayRef.current) return;
 
-    analyserRef.current.getByteFrequencyData(dataArrayRef.current);
-
-    // Update blob intensity
+    // blob intensity
     const average =
       dataArrayRef.current.reduce((sum, value) => sum + value, 0) /
       dataArrayRef.current.length;
@@ -404,18 +392,6 @@ export default function MusicPlayer(): JSX.Element {
                   />
                 ))}
               </div>
-
-              {/* Center frequency indicator */}
-              {/* <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div
-                  className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-white/30 blur-sm"
-                  style={{
-                    transform: `scale(${1 + audioData * 2})`,
-                    opacity: audioData,
-                    transition: "transform 0.1s ease-out",
-                  }}
-                />
-              </div> */}
             </div>
           </div>
 

@@ -1,16 +1,6 @@
 import React from 'react';
 import { Music, RefreshCw, X, Info } from 'lucide-react';
-
-interface Track {
-  id: number;
-  name: string;
-  url: string;
-  artist?: string;
-  duration?: number;
-  file_path?: string;
-  description?: string;
-}
-
+import { Track } from './interfaces/track';
 interface MusicLibraryProps {
   playlist: Track[];
   loading: boolean;
