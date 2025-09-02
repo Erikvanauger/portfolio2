@@ -39,15 +39,17 @@ export default function Portfolio() {
     { id: "sv", name: "Svenska" },
   ];
 
+  
+
   const projects = [
     {
       id: 1,
-      title: t.projects.project1.title,
-      description: t.projects.project1.description,
-      technologies: ["React", "NextJS", "Tailwind"],
-      image: "/dashboard2.png",
-      liveUrl: "https://forgebod.netlify.app/",
-      githubUrl: "https://github.com/Erikvanauger/fitness-app",
+      title: t.projects.project3.title,
+      description: t.projects.project3.description,
+      technologies: [ "NextJS","React", "Typescript"],
+      image: "/xlr8.PNG",
+      liveUrl: "https://xlreight.netlify.app/",
+      githubUrl: "https://github.com/Erikvanauger/ecommerce",
       available: true,
     },
     {
@@ -62,12 +64,12 @@ export default function Portfolio() {
     },
     {
       id: 3,
-      title: t.projects.project3.title,
-      description: t.projects.project3.description,
-      technologies: [ "NextJS","React", "Typescript"],
-      image: "/xlr8.PNG",
-      liveUrl: "https://xlreight.netlify.app/",
-      githubUrl: "https://github.com/Erikvanauger/ecommerce",
+      title: t.projects.project1.title,
+      description: t.projects.project1.description,
+      technologies: ["React", "NextJS", "Tailwind"],
+      image: "/dashboard2.png",
+      liveUrl: "https://forgebod.netlify.app/",
+      githubUrl: "https://github.com/Erikvanauger/fitness-app",
       available: true,
     },
     {
